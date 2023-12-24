@@ -1,13 +1,14 @@
 package com.onm.ordersandnotificationsmanagement.models;
+
+import com.onm.ordersandnotificationsmanagement.repos.OrderRepo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-public class SimpleOrder extends Order{
-    ArrayList<Product> products;
-
+public class AccOrder {
+    private Account account;
+    private SimpleOrder simpleOrder;
 }
