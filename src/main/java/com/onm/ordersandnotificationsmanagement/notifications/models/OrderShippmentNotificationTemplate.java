@@ -1,4 +1,4 @@
-package com.onm.ordersandnotificationsmanagement.models;
+package com.onm.ordersandnotificationsmanagement.notifications.models;
 
 public class OrderShippmentNotificationTemplate extends NotificationTemplate{
 }

@@ -1,4 +1,4 @@
-package com.onm.ordersandnotificationsmanagement.services;
+package com.onm.ordersandnotificationsmanagement.orders.services;
 
 // we need two services { simple , compound }
 public class OrderService {
