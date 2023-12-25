@@ -1,4 +1,10 @@
 package com.onm.ordersandnotificationsmanagement.utilities;
 
-public class EmailChannel implements Channel{
+/**
+ * The type Email channel.
+ */
+public class EmailChannel implements Channel {
+    public void print() {
+        System.out.println("Sent From Email.");
+    }
 }
