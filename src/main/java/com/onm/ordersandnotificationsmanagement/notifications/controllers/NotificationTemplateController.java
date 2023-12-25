@@ -1,4 +1,12 @@
 package com.onm.ordersandnotificationsmanagement.notifications.controllers;
-
+import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+@RestController
 public class NotificationTemplateController {
+    @RequestMapping(value = "/notifications",method = RequestMethod.GET)
+    public StringBuilder getNotifications(){
+        return NotificationTemplateService.listAllNotifications();
+    }
 }
