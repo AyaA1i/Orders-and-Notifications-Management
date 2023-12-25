@@ -1,20 +1,20 @@
 package com.onm.ordersandnotificationsmanagement.services;
-import com.onm.ordersandnotificationsmanagement.models.Account;
-import com.onm.ordersandnotificationsmanagement.models.Order;
-import com.onm.ordersandnotificationsmanagement.models.Product;
-import com.onm.ordersandnotificationsmanagement.models.SimpleOrder;
+import com.onm.ordersandnotificationsmanagement.models.*;
 import com.onm.ordersandnotificationsmanagement.repos.AccountRepo;
+import com.onm.ordersandnotificationsmanagement.repos.OrderRepo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Setter
 @Getter
 @NoArgsConstructor
-public class SimpleOrderService extends OrderService{
+@Service
+public class SimpleOrderService implements OrderService{
+    private static final OrderRepo orderRepo = new OrderRepo();
+    private static final ProductService productService = new ProductService();
     @Override
     public void calcFees(Order order) {
         double fees = 0;
@@ -25,34 +25,46 @@ public class SimpleOrderService extends OrderService{
         order.setOrderFees(fees);
         order.setShippingFees(50); //default simple order shipping fees
     }
-    @Override
-    public boolean placeOrder(HashMap<Order, Account> orderAccountHashMap) {
+    public boolean placeOrder(OrderAccount orderAccount) {
         ////for testing
         AccountRepo accountRepo = new AccountRepo();
         accountRepo.autofill();
+        productService.autoFill();
         /////for testing
-        for (Map.Entry<Order, Account> entry : orderAccountHashMap.entrySet()) {
-            Order order = entry.getKey();
-            Account account = entry.getValue();
 
-            account = accountRepo.getAccount(account.getId());
-            if(account == null) return false;
+        // return all account information
+        Account account = accountRepo.getAccount(orderAccount.getAccEmail());
+        if (account == null) return false;
 
-            double newBalance = account.getBalance() - (order.getOrderFees() + order.getShippingFees());
-            if (newBalance >= 0) {
-                account.setBalance(newBalance);
-                orderRepo.add(order);
-            } else {
-                return false;
-            }
+        SimpleOrder simpleOrder = new SimpleOrder();
+        simpleOrder.setOrderId(orderAccount.getOrderId());
+
+        // return all products' information
+        for (Integer i : orderAccount.getProdIds()) {
+            addProduct(simpleOrder, productService.getById(i));
         }
 
+        if (!deductOrder(simpleOrder, account)) return false;
+        OrderRepo.add(simpleOrder);
+
         //TODO: call notification template
-        //TODO: save in account DB
+
         return true;
     }
-    public void addProduct(Order order, Product product){
-        ((SimpleOrder)order).getProducts().add(product);
+
+    @Override
+    public boolean deductOrder(Order order, Account account) {
         calcFees(order);
+        double newBalance = account.getBalance() - (order.getOrderFees() + order.getShippingFees());
+        if (newBalance >= 0) {
+            account.setBalance(newBalance);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public void addProduct(SimpleOrder order, Product product){
+        order.getProducts().add(product);
     }
 }

@@ -1,12 +1,18 @@
 package com.onm.ordersandnotificationsmanagement.models;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 @Setter
 @Getter
-@NoArgsConstructor
+
 public class CompoundOrder extends Order{
     ArrayList<SimpleOrder> simpleOrders;
+    public CompoundOrder()
+    {
+        this.orderId = 0;
+        this.orderFees = 0;
+        this.shippingFees = 0;
+        simpleOrders = new ArrayList<>();
+    }
 }

@@ -13,17 +13,22 @@ import java.util.ArrayList;
 
 @Repository
 public class OrderRepo {
-    private final ArrayList<Order> orders;
-    public OrderRepo(){
-        this.orders = new ArrayList<>();
-    }
-    public void add(Order order){
+    @Getter
+    private static final ArrayList<Order> orders = new ArrayList<>();
+    public static void add(Order order){
         orders.add(order);
     }
     public void remove(Order order){
         orders.remove(order);
     }
-    public boolean search(Order order){
+    public boolean searchByOrder(Order order){
         return orders.contains(order);
+    }
+    public Order searchById(int id){
+        for(Order order: orders){
+            if(order.getOrderId() == id)
+                return order;
+        }
+        return null;
     }
 }

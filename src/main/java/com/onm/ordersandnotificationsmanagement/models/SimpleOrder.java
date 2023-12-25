@@ -6,8 +6,11 @@ import lombok.Setter;
 import java.util.ArrayList;
 @Setter
 @Getter
-@NoArgsConstructor
+
 public class SimpleOrder extends Order{
     ArrayList<Product> products;
-
+    public SimpleOrder()
+    {
+        products = new ArrayList<>();
+    }
 }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
 @Setter
 @Getter
 public class AccountRepo {
@@ -15,15 +17,15 @@ public class AccountRepo {
     }
     public void autofill()
     {
-        accounts.add(new Account(1,100));
-        accounts.add(new Account(2,100));
-        accounts.add(new Account(3,100));
-        accounts.add(new Account(4,100));
+        accounts.add(new Account("1@gmail.com",100));
+        accounts.add(new Account("2@gmail.com",100));
+        accounts.add(new Account("3@gmail.com",100));
+        accounts.add(new Account("4@gmail.com",100));
     }
-    public Account getAccount(int id){
+    public Account getAccount(String email){
         for(Account account: accounts)
         {
-            if(account.getId() == id)
+            if(Objects.equals(account.getEmail(), email))
                 return account;
         }
         return null;
