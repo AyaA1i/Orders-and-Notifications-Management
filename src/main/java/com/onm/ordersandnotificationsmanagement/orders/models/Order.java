@@ -1,4 +1,11 @@
 package com.onm.ordersandnotificationsmanagement.orders.models;
 
-public interface Order {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+
+public abstract class Order {
+    private int id;
 }

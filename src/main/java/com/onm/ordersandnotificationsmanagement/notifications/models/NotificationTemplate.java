@@ -1,8 +1,10 @@
 package com.onm.ordersandnotificationsmanagement.notifications.models;
-import com.onm.ordersandnotificationsmanagement.utilities.Languages;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -10,5 +12,5 @@ import lombok.Setter;
 public abstract class NotificationTemplate {
     String [] Placeholders;
     String temp;
-    Languages language;
+    Map<String ,String>languages = new HashMap<>();
 }

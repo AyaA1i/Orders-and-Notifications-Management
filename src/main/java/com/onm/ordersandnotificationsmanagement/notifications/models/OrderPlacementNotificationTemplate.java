@@ -1,12 +1,13 @@
 package com.onm.ordersandnotificationsmanagement.notifications.models;
 
-import com.onm.ordersandnotificationsmanagement.utilities.Languages;
-
 public class OrderPlacementNotificationTemplate extends NotificationTemplate{
-    public OrderPlacementNotificationTemplate(String[] placeholders, Languages language) {
+    public OrderPlacementNotificationTemplate(String[] placeholders, String language) {
         this.Placeholders = placeholders;
-        this.language = language;
-        this.temp = "Dear {x} , your booking of the {y} is confirmed. thanks for using our store :) ";
+        languages.put("English","Dear {x} , your booking of the order with id : {y} is confirmed. " +
+                "thanks for using our store :) ");
+        languages.put("German","Sehr geehrte {x}, Ihre Buchung der Bestellung mit der ID: {y} ist bestätigt." +
+                "Danke, dass Sie unseren Shop nutzen :)");
+        this.temp = languages.get(language);
     }
 
 }
