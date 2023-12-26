@@ -1,9 +1,7 @@
-package com.onm.ordersandnotificationsmanagement.repos;
+package com.onm.ordersandnotificationsmanagement.orders;
 
-import com.onm.ordersandnotificationsmanagement.models.Order;
-import com.onm.ordersandnotificationsmanagement.services.OrderService;
+import com.onm.ordersandnotificationsmanagement.orders.Order;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Repository;
 

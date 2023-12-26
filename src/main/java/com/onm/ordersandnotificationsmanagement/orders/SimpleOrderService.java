@@ -1,7 +1,8 @@
-package com.onm.ordersandnotificationsmanagement.services;
-import com.onm.ordersandnotificationsmanagement.models.*;
-import com.onm.ordersandnotificationsmanagement.repos.AccountRepo;
-import com.onm.ordersandnotificationsmanagement.repos.OrderRepo;
+package com.onm.ordersandnotificationsmanagement.orders;
+import com.onm.ordersandnotificationsmanagement.accounts.Account;
+import com.onm.ordersandnotificationsmanagement.products.Product;
+import com.onm.ordersandnotificationsmanagement.accounts.AccountRepo;
+import com.onm.ordersandnotificationsmanagement.products.ProductService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Getter
 @NoArgsConstructor
 @Service
-public class SimpleOrderService implements OrderService{
+public class SimpleOrderService implements OrderService {
     private static final OrderRepo orderRepo = new OrderRepo();
     private static final ProductService productService = new ProductService();
     @Override

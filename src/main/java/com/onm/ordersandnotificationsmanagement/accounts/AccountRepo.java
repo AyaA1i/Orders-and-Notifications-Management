@@ -1,6 +1,5 @@
-package com.onm.ordersandnotificationsmanagement.repos;
+package com.onm.ordersandnotificationsmanagement.accounts;
 
-import com.onm.ordersandnotificationsmanagement.models.Account;
 import lombok.Getter;
 import lombok.Setter;
 

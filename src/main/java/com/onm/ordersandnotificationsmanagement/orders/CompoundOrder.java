@@ -1,4 +1,6 @@
-package com.onm.ordersandnotificationsmanagement.models;
+package com.onm.ordersandnotificationsmanagement.orders;
+import com.onm.ordersandnotificationsmanagement.orders.Order;
+import com.onm.ordersandnotificationsmanagement.orders.SimpleOrder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -6,7 +8,7 @@ import java.util.ArrayList;
 @Setter
 @Getter
 
-public class CompoundOrder extends Order{
+public class CompoundOrder extends Order {
     ArrayList<SimpleOrder> simpleOrders;
     public CompoundOrder()
     {

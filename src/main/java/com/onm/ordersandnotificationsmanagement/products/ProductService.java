@@ -1,10 +1,9 @@
-package com.onm.ordersandnotificationsmanagement.services;
+package com.onm.ordersandnotificationsmanagement.products;
 
-import com.onm.ordersandnotificationsmanagement.models.Product;
-import com.onm.ordersandnotificationsmanagement.repos.ProductRepo;
+import com.onm.ordersandnotificationsmanagement.products.Product;
+import com.onm.ordersandnotificationsmanagement.products.ProductRepo;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Setter

@@ -1,10 +1,5 @@
-package com.onm.ordersandnotificationsmanagement.controllers;
+package com.onm.ordersandnotificationsmanagement.orders;
 
-import com.onm.ordersandnotificationsmanagement.models.Order;
-import com.onm.ordersandnotificationsmanagement.models.OrderAccount;
-import com.onm.ordersandnotificationsmanagement.services.CompoundOrderService;
-import com.onm.ordersandnotificationsmanagement.services.OrderService;
-import com.onm.ordersandnotificationsmanagement.services.SimpleOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

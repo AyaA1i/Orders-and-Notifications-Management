@@ -1,10 +1,6 @@
-package com.onm.ordersandnotificationsmanagement.services;
+package com.onm.ordersandnotificationsmanagement.orders;
 
-import com.onm.ordersandnotificationsmanagement.models.Account;
-import com.onm.ordersandnotificationsmanagement.models.Order;
-import com.onm.ordersandnotificationsmanagement.models.OrderAccount;
-import com.onm.ordersandnotificationsmanagement.models.SimpleOrder;
-import com.onm.ordersandnotificationsmanagement.repos.OrderRepo;
+import com.onm.ordersandnotificationsmanagement.accounts.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
