@@ -34,12 +34,12 @@ public class ProductController {
     /**
      * Remove product response entity.
      *
-     * @param product the product
+     * @param serialNumber the serial number
      * @return the response entity
      */
-    @PostMapping("/remove")
-    public ResponseEntity<ArrayList<Product>> removeProduct(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.removeProduct(product));
+    @DeleteMapping("/remove/{serialNumber}")
+    public ResponseEntity<ArrayList<Product>> removeProduct(@PathVariable("serialNumber") String serialNumber) {
+        return ResponseEntity.ok(productService.removeProduct(serialNumber));
     }
 
     /**

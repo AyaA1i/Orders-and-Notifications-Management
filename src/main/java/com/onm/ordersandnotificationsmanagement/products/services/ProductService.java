@@ -25,10 +25,15 @@ public class ProductService {
     /**
      * Remove.
      *
-     * @param product the product
+     * @param serialNumber the serial number
      */
-    public ArrayList<Product> removeProduct(Product product) {
-        ProductRepo.productList.remove(product);
+    public ArrayList<Product> removeProduct(String serialNumber) {
+        for (Product product : ProductRepo.productList) {
+            if (Objects.equals(product.getSerialNumber(), serialNumber)) {
+                ProductRepo.productList.remove(product);
+                break;
+            }
+        }
         return ProductRepo.productList;
     }
 
