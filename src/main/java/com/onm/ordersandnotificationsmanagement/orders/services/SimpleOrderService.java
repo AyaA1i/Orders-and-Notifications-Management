@@ -2,6 +2,7 @@ package com.onm.ordersandnotificationsmanagement.orders.services;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
@@ -35,8 +36,8 @@ public class SimpleOrderService implements OrderService {
     public boolean placeOrder(OrderAccount orderAccount) {
         ////for testing
         AccountRepo accountRepo = new AccountRepo();
-        accountRepo.autofill();
-        productService.autoFill();
+//        accountRepo.autofill();
+//        productService.autoFill();
         /////for testing
 
         // return all account information
@@ -48,16 +49,16 @@ public class SimpleOrderService implements OrderService {
 
         // return all products' information
         for (Integer i : orderAccount.getProdIds()) {
-            addProduct(simpleOrder, productService.getById(i));
+            addProduct(simpleOrder, productService.searchById(String.valueOf(i)));
         }
 
         if (!deductOrder(simpleOrder, account)) return false;
         OrderRepo.add(simpleOrder);
 
-        //TODO: call notification template
+        //TODO: call notification template //Done
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 orderAccount);
-
+        NotificationTemplateService.addNotification(NT);
         return true;
     }
 

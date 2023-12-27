@@ -5,15 +5,18 @@ import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.repos.AccountRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class AccountService {
     private final AccountRepo accountRepo = new AccountRepo();
-    public String signUp(Account account){
+    public ArrayList<Account> signUp(Account account){
         if(!accountRepo.searchAccount(account)){
             AccountController.currentAccount = account;
-            return "Signed up Successfully :) \n";
+            return AccountRepo.accountsList;
         }
-        return "This Account is Already Exist! \n";
+        //return "This Account is Already Exist! \n";
+        return null;
     }
     public String signIn(String email, String password){
         Account tempAccount = accountRepo.searchAccount(email, password);

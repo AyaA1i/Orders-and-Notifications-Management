@@ -15,6 +15,8 @@ public class NotificationTemplateService {
         NotificationTemplateRepo.Notifications.add(notificationTemplate);
     }
     public static StringBuilder listAllNotifications(){
+        // store strings in queue
+
         StringBuilder notifications = new StringBuilder();
         for(NotificationTemplate n : NotificationTemplateRepo.Notifications){
             notifications.append(n.getTemp());

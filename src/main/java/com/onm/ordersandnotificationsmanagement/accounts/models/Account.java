@@ -8,12 +8,12 @@ import java.util.ArrayList;
 @Setter(AccessLevel.PUBLIC)
 @RequiredArgsConstructor
 public class Account {
-    private final String name;
-    private final String email;
-    private final String password;
-    private final String phoneNumber;
-    private final String language;
-    private final Double balance;
+    private  String name;
+    private  String email;
+    private  String password;
+    private  String phoneNumber;
+    private  String language;
+    private  Double balance;
     private ArrayList<Order> orders = new ArrayList<>();
 
     public void addNewOrder(Order order){

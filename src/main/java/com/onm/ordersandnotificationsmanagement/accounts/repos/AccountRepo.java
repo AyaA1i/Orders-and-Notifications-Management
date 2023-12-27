@@ -3,13 +3,12 @@ package com.onm.ordersandnotificationsmanagement.accounts.repos;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import java.util.ArrayList;
 import java.util.Objects;
-import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import lombok.Getter;
 import lombok.Setter;
 @Setter
 @Getter
 public class AccountRepo {
-    private static final ArrayList<Account> accountsList = new ArrayList<>();
+    public static final ArrayList<Account> accountsList = new ArrayList<>();
     public void addAccount(Account account){
         accountsList.add(account);
     }
