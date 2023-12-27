@@ -11,7 +11,7 @@ public class AccountController {
     public static Account currentAccount;
     private static final AccountService accountService = new AccountService();
     @PostMapping ("/signUp")
-    public ArrayList<Account> signUp(@RequestBody Account account){
+    public String signUp(@RequestBody Account account){
         return accountService.signUp(account);
     }
     @PostMapping ("/signIn/{email}/{password}")

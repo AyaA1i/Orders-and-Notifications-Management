@@ -10,13 +10,12 @@ import java.util.ArrayList;
 @Service
 public class AccountService {
     private final AccountRepo accountRepo = new AccountRepo();
-    public ArrayList<Account> signUp(Account account){
+    public String signUp(Account account){
         if(!accountRepo.searchAccount(account)){
             AccountController.currentAccount = account;
-            return AccountRepo.accountsList;
+            return "Account created Successfully :) \n";
         }
-        //return "This Account is Already Exist! \n";
-        return null;
+        return "This Account is Already Exist! \n";
     }
     public String signIn(String email, String password){
         Account tempAccount = accountRepo.searchAccount(email, password);
