@@ -13,7 +13,6 @@ public class OrderPlacementNotificationTemplate extends NotificationTemplate{
         languages.put("German","Sehr geehrte {x}, Ihre Buchung der Bestellung mit der ID: {y} ist bestätigt." +
                 "Danke, dass Sie unseren Shop nutzen :)");
         this.temp = languages.get(account.getLanguage());
-        temp += '\n';
         Channel ch = new EmailChannel();
         temp += ch.print();
     }
