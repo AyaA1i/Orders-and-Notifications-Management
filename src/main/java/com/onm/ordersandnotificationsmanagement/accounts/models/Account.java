@@ -1,20 +1,22 @@
 package com.onm.ordersandnotificationsmanagement.accounts.models;
 
-import lombok.Getter;
+import com.onm.ordersandnotificationsmanagement.orders.models.Order;
+import lombok.*;
+import java.util.ArrayList;
 
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Setter
-@Getter
-@NoArgsConstructor
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PUBLIC)
+@RequiredArgsConstructor
 public class Account {
-    private double balance;
+    private final String name;
+    private final String email;
+    private final String password;
+    private final String phoneNumber;
+    private final String language;
+    private final Double balance;
+    private ArrayList<Order> orders = new ArrayList<>();
 
-    private String email;
-    public Account(String email, double balance){
-        this.email = email;
-        this.balance = balance;
+    public void addNewOrder(Order order){
+        orders.add(order);
     }
 }
-
