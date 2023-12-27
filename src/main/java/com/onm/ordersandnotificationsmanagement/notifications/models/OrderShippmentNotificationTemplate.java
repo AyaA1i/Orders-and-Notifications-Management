@@ -14,7 +14,6 @@ public class OrderShippmentNotificationTemplate extends NotificationTemplate{
                 "wird bestätigt und die Versandkosten betragen {z}" +
                 "Danke, dass Sie unseren Shop nutzen :)");
         this.temp = languages.get(account.getLanguage());
-        temp += '\n';
         Channel ch = new SMSChannel();
         temp += ch.print();
 
