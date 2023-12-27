@@ -1,5 +1,7 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
+import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
@@ -53,6 +55,8 @@ public class SimpleOrderService implements OrderService {
         OrderRepo.add(simpleOrder);
 
         //TODO: call notification template
+        NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
+                orderAccount);
 
         return true;
     }
