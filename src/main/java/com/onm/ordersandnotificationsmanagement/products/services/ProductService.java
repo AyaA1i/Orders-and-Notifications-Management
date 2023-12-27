@@ -2,27 +2,52 @@ package com.onm.ordersandnotificationsmanagement.products.services;
 
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import com.onm.ordersandnotificationsmanagement.products.repos.ProductRepo;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.Objects;
 
-@Setter
-@Getter
+/**
+ * The type Product service.
+ */
 @Service
 public class ProductService {
-    private static final ProductRepo productRepo = new ProductRepo();
-    public Product getById(int id){
-        return productRepo.searchById(id);
+    /**
+     * Add.
+     *
+     * @param product the product
+     * @return the array list
+     */
+    public ArrayList<Product> addProduct(Product product) {
+        ProductRepo.productList.add(product);
+        return ProductRepo.productList;
     }
-    public void autoFill()
-    {
-        Product product1 = new Product(1,"Iphone",10);
-        Product product2 = new Product(2,"mobile",20);
-        Product product3 = new Product(3,"fries",30);
-        Product product4 = new Product(4,"laptop",40);
-        productRepo.addProduct(product1);
-        productRepo.addProduct(product2);
-        productRepo.addProduct(product3);
-        productRepo.addProduct(product4);
+
+    /**
+     * Remove.
+     *
+     * @param product the product
+     */
+    public ArrayList<Product> removeProduct(Product product) {
+        ProductRepo.productList.remove(product);
+        return ProductRepo.productList;
     }
+
+    /**
+     * List all array list.
+     *
+     * @return the array list
+     */
+    public ArrayList<Product> listAllProducts() {
+        return ProductRepo.productList;
+    }
+
+
+    public Product searchById(String id){
+        for(Product product: ProductRepo.productList){
+            if(Objects.equals(product.getSerialNumber(), id))
+                return product;
+        }
+        return null;
+    }
+
 }
