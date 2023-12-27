@@ -10,7 +10,7 @@ import java.util.Queue;
 @RestController
 public class NotificationTemplateController {
     @RequestMapping(value = "/notifications",method = RequestMethod.GET)
-    public StringBuilder getNotifications(){
+    public Queue<String> getNotifications(){
         return NotificationTemplateService.listAllNotifications();
     }
 }

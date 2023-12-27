@@ -12,17 +12,14 @@ public class NotificationTemplateService {
                 notificationTemplate.getPlaceholders()[0]));
         notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{y}",
                 notificationTemplate.getPlaceholders()[1]));
-        NotificationTemplateRepo.Notifications.add(notificationTemplate);
-    }
-    public static StringBuilder listAllNotifications(){
-        // store strings in queue
-
-        StringBuilder notifications = new StringBuilder();
-        for(NotificationTemplate n : NotificationTemplateRepo.Notifications){
-            notifications.append(n.getTemp());
-            notifications.append('\n');
+        if(notificationTemplate.getPlaceholders().length==3){
+            notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{z}",
+                    notificationTemplate.getPlaceholders()[2]));
         }
-        return notifications;
+        NotificationTemplateRepo.Notifications.add(notificationTemplate.getTemp());
+    }
+    public static Queue<String> listAllNotifications(){
+        return NotificationTemplateRepo.Notifications;
     }
 
 }

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 @Service
 public class NotificationTemplateRepo {
-    public static final Queue<NotificationTemplate> Notifications = new ArrayDeque<>();
+    public static final Queue<String> Notifications = new ArrayDeque<>();
 
 }

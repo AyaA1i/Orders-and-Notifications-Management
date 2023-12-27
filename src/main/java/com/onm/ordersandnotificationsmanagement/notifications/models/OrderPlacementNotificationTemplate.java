@@ -2,6 +2,8 @@ package com.onm.ordersandnotificationsmanagement.notifications.models;
 
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
+import com.onm.ordersandnotificationsmanagement.utilities.Channel;
+import com.onm.ordersandnotificationsmanagement.utilities.EmailChannel;
 
 public class OrderPlacementNotificationTemplate extends NotificationTemplate{
     public OrderPlacementNotificationTemplate(Account account , OrderAccount order) {
@@ -11,6 +13,9 @@ public class OrderPlacementNotificationTemplate extends NotificationTemplate{
         languages.put("German","Sehr geehrte {x}, Ihre Buchung der Bestellung mit der ID: {y} ist bestätigt." +
                 "Danke, dass Sie unseren Shop nutzen :)");
         this.temp = languages.get(account.getLanguage());
+        temp += '\n';
+        Channel ch = new EmailChannel();
+        temp += ch.print();
     }
 
 }
