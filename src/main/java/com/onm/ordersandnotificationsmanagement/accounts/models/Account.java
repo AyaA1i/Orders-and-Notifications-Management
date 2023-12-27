@@ -12,6 +12,11 @@ public class Account {
     private final String email;
     private final String password;
     private final String phoneNumber;
+    private final String language;
     private final Double balance;
     private ArrayList<Order> orders = new ArrayList<>();
+
+    public void addNewOrder(Order order){
+        orders.add(order);
+    }
 }
