@@ -1,8 +1,12 @@
-package com.onm.ordersandnotificationsmanagement.orders;
-import com.onm.ordersandnotificationsmanagement.accounts.Account;
-import com.onm.ordersandnotificationsmanagement.products.Product;
-import com.onm.ordersandnotificationsmanagement.accounts.AccountRepo;
-import com.onm.ordersandnotificationsmanagement.products.ProductService;
+package com.onm.ordersandnotificationsmanagement.orders.services;
+import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
+import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
+import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
+import com.onm.ordersandnotificationsmanagement.orders.models.Order;
+import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
+import com.onm.ordersandnotificationsmanagement.products.models.Product;
+import com.onm.ordersandnotificationsmanagement.accounts.repos.AccountRepo;
+import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
