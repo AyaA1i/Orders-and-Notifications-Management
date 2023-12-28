@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Setter
@@ -25,8 +27,6 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @Service
 public class CompoundOrderService implements OrderService {
-    private static final OrderRepo orderRepo = new OrderRepo();
-    private static final ProductService productService = new ProductService();
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -39,16 +39,14 @@ public class CompoundOrderService implements OrderService {
 
     @Override
     public void calcShippingFees(Order order) {
-        order.setShippingFees(20);      // default compound order shipping fees
+        order.setShippingFees(20.0);      // default compound order shipping fees
     }
 
-    //
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
-        ////for testing
-//        accountRepo.autofill();
-//        productService.autoFill();
-        /////for testing
+
         CompoundOrder compoundOrder = new CompoundOrder();
+        compoundOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
+        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         compoundOrder.setEmail(email);
 
         for(OrderAccount orderAccount: orderAccounts)
@@ -58,14 +56,18 @@ public class CompoundOrderService implements OrderService {
             if (account == null) return false;
 
             SimpleOrder simpleOrder = new SimpleOrder();
-            simpleOrder.setOrderId(orderAccount.getOrderId());
+            simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
+            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
             simpleOrder.setEmail(account.getEmail());
+            simpleOrder.setDate(LocalDateTime.now());
+
 
             // return all products' information
             for (String i : orderAccount.getProdSerialNum()) {
                 addProduct(simpleOrder, productService.searchById(String.valueOf(i)));
             }
-            if(!(deductOrder(simpleOrder, account) || shipOrder(simpleOrder, account))) return false; // deduct order fees
+            if(!deductOrder(simpleOrder, account)) return false;
+            if(!shipOrder(simpleOrder, account)) return false;       // deduct order fees
 
             compoundOrder.getSimpleOrders().add(simpleOrder);
 
@@ -95,10 +97,30 @@ public class CompoundOrderService implements OrderService {
         }
         return true;
     }
+    @Override
+    public  void cancelOrder(Order order)
+    {
+        for(SimpleOrder simpleOrder: ((CompoundOrder)order).getSimpleOrders())
+        {
+            Account account = AccountService.accountRepo.getAccount(simpleOrder.getEmail());
+            account.setBalance(account.getBalance() + simpleOrder.getOrderFees() + simpleOrder.getShippingFees());
+            account.getOrders().remove(simpleOrder);
+            OrderRepo.getOrders().remove(simpleOrder);
+            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
+        }
+        OrderRepo.getOrders().remove(order);
+        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
+    }
 
     @Override
-    public ArrayList<Order> cancelOrder(int orderId) {
-        return null;
+    public void cancelOrderShipment(Order order) {
+        for(SimpleOrder simpleOrder: ((CompoundOrder)order).getSimpleOrders())
+        {
+            Account account = AccountService.accountRepo.getAccount(simpleOrder.getEmail());
+            account.setBalance(account.getBalance() + simpleOrder.getShippingFees());
+            simpleOrder.setShippingFees(0);
+        }
+        order.setShippingFees(0);
     }
 
     @Override
@@ -116,10 +138,6 @@ public class CompoundOrderService implements OrderService {
         return true;
     }
 
-//    public void addOrder(CompoundOrder order, SimpleOrder simpleOrder){
-//        order.getSimpleOrders().add(simpleOrder);
-//        calcOrderFees(order);
-//    }
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);
     }

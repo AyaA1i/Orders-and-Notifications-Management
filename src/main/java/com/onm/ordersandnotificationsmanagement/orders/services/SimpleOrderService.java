@@ -27,8 +27,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Service
 public class SimpleOrderService implements OrderService {
-    private static final OrderRepo orderRepo = new OrderRepo();
-    private static final ProductService productService = new ProductService();
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -41,21 +39,18 @@ public class SimpleOrderService implements OrderService {
 
     @Override
     public void calcShippingFees(Order order) {
-        order.setShippingFees(50); //default simple order shipping fees
+        order.setShippingFees(50.0); //default simple order shipping fees
     }
 
     public boolean placeOrder(OrderAccount orderAccount) {
-        ////for testing
-//        accountRepo.autofill();
-//        productService.autoFill();
-        /////for testing
 
         // return all account information
         Account account = AccountService.accountRepo.getAccount(orderAccount.getAccEmail());
         if (account == null) return false;
 
         SimpleOrder simpleOrder = new SimpleOrder();
-        simpleOrder.setOrderId(orderAccount.getOrderId());
+        simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
+        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         simpleOrder.setEmail(account.getEmail());
 
         // return all products' information
@@ -63,7 +58,8 @@ public class SimpleOrderService implements OrderService {
             addProduct(simpleOrder, productService.searchById(i));
         }
 
-        if (!(deductOrder(simpleOrder, account) || shipOrder(simpleOrder, account))) return false;
+        if (!deductOrder(simpleOrder, account)) return false;
+        if(!shipOrder(simpleOrder, account)) return false;
         OrderRepo.add(simpleOrder);
 
         // create notification
@@ -102,24 +98,22 @@ public class SimpleOrderService implements OrderService {
         }
         return true;
     }
-    @Override
-    public ArrayList<Order> cancelOrder(int orderId){
-        Order order = orderRepo.searchById(orderId);
-        Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
-        ArrayList<Order>arr = new ArrayList<>();
-        Order o = new SimpleOrder();
-        o.setEmail(String.valueOf(duration.toSeconds()));
-        arr.add(o);
-        if(duration.toSeconds()>ALLOWED_DURATION){
-            return arr;
-        }
+   @Override
+    public void cancelOrder(Order order)
+    {
         Account account = AccountService.accountRepo.getAccount(order.getEmail());
-        account.setBalance(account.getBalance()+order.getOrderFees()+order.getShippingFees());
+        account.setBalance(account.getBalance() + order.getOrderFees() + order.getShippingFees());
         account.getOrders().remove(order);
         OrderRepo.getOrders().remove(order);
-        return AccountService.accountRepo.getAccount(order.getEmail()).getOrders();
+        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
     }
 
+    @Override
+    public void cancelOrderShipment(Order order) {
+        Account account = AccountService.accountRepo.getAccount(order.getEmail());
+        account.setBalance(account.getBalance() + order.getShippingFees());
+        order.setShippingFees(0);
+    }
 
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);
