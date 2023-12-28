@@ -1,7 +1,9 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
+import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
@@ -24,48 +26,69 @@ public class SimpleOrderService implements OrderService {
     private static final OrderRepo orderRepo = new OrderRepo();
     private static final ProductService productService = new ProductService();
     @Override
-    public void calcFees(Order order) {
+    public void calcOrderFees(Order order) {
         double fees = 0;
         for (Product product: ((SimpleOrder)order).getProducts())
         {
             fees += product.getPrice();
         }
         order.setOrderFees(fees);
+    }
+
+    @Override
+    public void calcShippingFees(Order order) {
         order.setShippingFees(50); //default simple order shipping fees
     }
+
     public boolean placeOrder(OrderAccount orderAccount) {
         ////for testing
-        AccountRepo accountRepo = new AccountRepo();
 //        accountRepo.autofill();
 //        productService.autoFill();
         /////for testing
 
         // return all account information
-        Account account = accountRepo.getAccount(orderAccount.getAccEmail());
+        Account account = AccountService.accountRepo.getAccount(orderAccount.getAccEmail());
         if (account == null) return false;
 
         SimpleOrder simpleOrder = new SimpleOrder();
         simpleOrder.setOrderId(orderAccount.getOrderId());
 
         // return all products' information
-        for (Integer i : orderAccount.getProdIds()) {
+        for (String i : orderAccount.getProdSerialNum()) {
             addProduct(simpleOrder, productService.searchById(String.valueOf(i)));
         }
 
-        if (!deductOrder(simpleOrder, account)) return false;
+        if (!(deductOrder(simpleOrder, account) || shipOrder(simpleOrder, account))) return false;
         OrderRepo.add(simpleOrder);
 
-        //TODO: call notification template //Done
+        // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
-                orderAccount);
+                simpleOrder);
+        NotificationTemplateService.addNotification(NT);
+        // add order to the account orders
+        account.addNewOrder(simpleOrder);
+        return true;
+    }
+
+    @Override
+    public boolean shipOrder(Order order, Account account) {
+        calcShippingFees(order);
+        double newBalance = account.getBalance() - (order.getShippingFees());
+        if (newBalance >= 0) {
+            account.setBalance(newBalance);
+        } else {
+            return false;
+        }
+        NotificationTemplate NT = new OrderShippmentNotificationTemplate(account,
+                order);
         NotificationTemplateService.addNotification(NT);
         return true;
     }
 
     @Override
     public boolean deductOrder(Order order, Account account) {
-        calcFees(order);
-        double newBalance = account.getBalance() - (order.getOrderFees() + order.getShippingFees());
+        calcOrderFees(order);
+        double newBalance = account.getBalance() - (order.getOrderFees());
         if (newBalance >= 0) {
             account.setBalance(newBalance);
         } else {

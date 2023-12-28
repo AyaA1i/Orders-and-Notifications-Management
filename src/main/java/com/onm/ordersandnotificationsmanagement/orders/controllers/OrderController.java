@@ -22,20 +22,20 @@ public class OrderController {
         this.simpleOrderService = simpleOrderService;
         this.compoundOrderService = compoundOrderService;
     }
-    @PostMapping(value = "/place-simple-order")
+    @PostMapping(value = "/placeSimpleOrder")
     public ResponseEntity<Void> placeSimpleOrder(@RequestBody OrderAccount orderAccount){
 
         if(simpleOrderService.placeOrder(orderAccount))
             return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    @PostMapping(value = "/place-compound-order")
+    @PostMapping(value = "/placeCompoundOrder")
     public ResponseEntity<Void> placeCompoundOrder(@RequestBody ArrayList<OrderAccount> orderAccounts){
         if(compoundOrderService.placeOrder(orderAccounts))
             return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    @GetMapping(value = "/all-orders")
+    @GetMapping(value = "/listOrders")
     public ResponseEntity<ArrayList<Order>> listOrders(){
         return ResponseEntity.status(HttpStatus.OK).body(OrderService.listOrders());
     }

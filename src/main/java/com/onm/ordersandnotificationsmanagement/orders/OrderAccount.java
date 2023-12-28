@@ -11,5 +11,5 @@ import java.util.ArrayList;
 public class OrderAccount {
     private int orderId;
     private String accEmail;
-    private ArrayList<Integer> prodIds;
+    private ArrayList<String> prodSerialNum;
 }

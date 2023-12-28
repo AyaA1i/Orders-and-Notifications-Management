@@ -12,7 +12,9 @@ import java.util.ArrayList;
 @Service
 public interface OrderService {
 
-    public abstract void calcFees(Order order);
+    public abstract void calcOrderFees(Order order);
+    public abstract void calcShippingFees(Order order);
+    public abstract boolean shipOrder(Order order, Account account);
     public abstract boolean deductOrder(Order order, Account account);
 
     public static ArrayList<Order> listOrders() {

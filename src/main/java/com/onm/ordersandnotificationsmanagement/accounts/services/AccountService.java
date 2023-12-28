@@ -3,13 +3,14 @@ package com.onm.ordersandnotificationsmanagement.accounts.services;
 import com.onm.ordersandnotificationsmanagement.accounts.controllers.AccountController;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.repos.AccountRepo;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 @Service
 public class AccountService {
-    private final AccountRepo accountRepo = new AccountRepo();
+    public static final AccountRepo accountRepo = new AccountRepo();
     public String signUp(Account account){
         if(!accountRepo.searchAccount(account)){
             AccountController.currentAccount = account;
