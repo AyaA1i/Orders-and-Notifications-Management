@@ -40,10 +40,19 @@ public class OrderController {
     public ResponseEntity<ArrayList<Order>> listOrders(){
         return ResponseEntity.status(HttpStatus.OK).body(OrderService.listOrders());
     }
-    @DeleteMapping(value = "/cancelSimpleOrder/{id}")
-    public ArrayList<Order> cancelSimpleOrder( @PathVariable(value = "id") int id){
-        return simpleOrderService.cancelOrder(id);
+    @DeleteMapping(value = "/cancelOrder/{id}")
+    public ResponseEntity<Void> cancelOrder( @PathVariable(value = "id") int id){
+        if(OrderService.cancel(id, false))
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+    @DeleteMapping(value = "/cancelOrderShipping/{id}")
+    public ResponseEntity<Void> cancelOrderShipping( @PathVariable(value = "id") int id){
+        if(OrderService.cancel(id, true))
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
     // Shipment cancel for bot(simple , compound)
     // cancel compound order
     // remove from notification queue // Aya

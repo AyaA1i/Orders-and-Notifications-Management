@@ -9,7 +9,6 @@ import java.util.ArrayList;
 @Getter
 @Component
 public class OrderAccount {
-    private int orderId;
     private String accEmail;
     private ArrayList<String> prodSerialNum;
 }
