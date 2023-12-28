@@ -29,9 +29,10 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    @PostMapping(value = "/placeCompoundOrder")
-    public ResponseEntity<Void> placeCompoundOrder(@RequestBody ArrayList<OrderAccount> orderAccounts){
-        if(compoundOrderService.placeOrder(orderAccounts))
+    @PostMapping(value = "/placeCompoundOrder/{email}")
+    public ResponseEntity<Void> placeCompoundOrder(@RequestBody ArrayList<OrderAccount> orderAccounts,
+                                                   @PathVariable(value = "email") String email){
+        if(compoundOrderService.placeOrder(orderAccounts,email))
             return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
@@ -39,4 +40,16 @@ public class OrderController {
     public ResponseEntity<ArrayList<Order>> listOrders(){
         return ResponseEntity.status(HttpStatus.OK).body(OrderService.listOrders());
     }
+    @DeleteMapping(value = "/cancelSimpleOrder/{id}")
+    public ArrayList<Order> cancelSimpleOrder( @PathVariable(value = "id") int id){
+        return simpleOrderService.cancelOrder(id);
+    }
+    // Shipment cancel for bot(simple , compound)
+    // cancel compound order
+    // remove from notification queue // Aya
+    // Statics -
+    // Tokens
+    // class diagram
+    // notion
+
 }

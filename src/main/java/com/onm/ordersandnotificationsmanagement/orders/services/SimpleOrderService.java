@@ -17,6 +17,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Date;
+
 
 @Setter
 @Getter
@@ -52,10 +56,11 @@ public class SimpleOrderService implements OrderService {
 
         SimpleOrder simpleOrder = new SimpleOrder();
         simpleOrder.setOrderId(orderAccount.getOrderId());
+        simpleOrder.setEmail(account.getEmail());
 
         // return all products' information
         for (String i : orderAccount.getProdSerialNum()) {
-            addProduct(simpleOrder, productService.searchById(String.valueOf(i)));
+            addProduct(simpleOrder, productService.searchById(i));
         }
 
         if (!(deductOrder(simpleOrder, account) || shipOrder(simpleOrder, account))) return false;
@@ -67,6 +72,7 @@ public class SimpleOrderService implements OrderService {
         NotificationTemplateService.addNotification(NT);
         // add order to the account orders
         account.addNewOrder(simpleOrder);
+        simpleOrder.setDate(java.time.LocalDateTime.now());
         return true;
     }
 
@@ -96,6 +102,24 @@ public class SimpleOrderService implements OrderService {
         }
         return true;
     }
+    @Override
+    public ArrayList<Order> cancelOrder(int orderId){
+        Order order = orderRepo.searchById(orderId);
+        Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
+        ArrayList<Order>arr = new ArrayList<>();
+        Order o = new SimpleOrder();
+        o.setEmail(String.valueOf(duration.toSeconds()));
+        arr.add(o);
+        if(duration.toSeconds()>ALLOWED_DURATION){
+            return arr;
+        }
+        Account account = AccountService.accountRepo.getAccount(order.getEmail());
+        account.setBalance(account.getBalance()+order.getOrderFees()+order.getShippingFees());
+        account.getOrders().remove(order);
+        OrderRepo.getOrders().remove(order);
+        return AccountService.accountRepo.getAccount(order.getEmail()).getOrders();
+    }
+
 
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);

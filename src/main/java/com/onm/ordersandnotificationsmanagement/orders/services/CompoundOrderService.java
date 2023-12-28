@@ -42,13 +42,14 @@ public class CompoundOrderService implements OrderService {
         order.setShippingFees(20);      // default compound order shipping fees
     }
 
-    public boolean placeOrder(ArrayList<OrderAccount> orderAccounts) {
+    //
+    public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
         ////for testing
 //        accountRepo.autofill();
 //        productService.autoFill();
         /////for testing
         CompoundOrder compoundOrder = new CompoundOrder();
-
+        compoundOrder.setEmail(email);
 
         for(OrderAccount orderAccount: orderAccounts)
         {
@@ -58,6 +59,7 @@ public class CompoundOrderService implements OrderService {
 
             SimpleOrder simpleOrder = new SimpleOrder();
             simpleOrder.setOrderId(orderAccount.getOrderId());
+            simpleOrder.setEmail(account.getEmail());
 
             // return all products' information
             for (String i : orderAccount.getProdSerialNum()) {
@@ -67,7 +69,6 @@ public class CompoundOrderService implements OrderService {
 
             compoundOrder.getSimpleOrders().add(simpleOrder);
 
-            compoundOrder.setOrderId(compoundOrder.getOrderId() + simpleOrder.getOrderId());
             compoundOrder.setOrderFees(compoundOrder.getOrderFees() + simpleOrder.getOrderFees());
             compoundOrder.setShippingFees(compoundOrder.getShippingFees() + simpleOrder.getShippingFees());
             // create notification
@@ -96,6 +97,11 @@ public class CompoundOrderService implements OrderService {
     }
 
     @Override
+    public ArrayList<Order> cancelOrder(int orderId) {
+        return null;
+    }
+
+    @Override
     public boolean shipOrder(Order order, Account account) {
         calcShippingFees(order);
         double newBalance = account.getBalance() - order.getShippingFees();
@@ -110,10 +116,10 @@ public class CompoundOrderService implements OrderService {
         return true;
     }
 
-    public void addOrder(CompoundOrder order, SimpleOrder simpleOrder){
-        order.getSimpleOrders().add(simpleOrder);
-        calcOrderFees(order);
-    }
+//    public void addOrder(CompoundOrder order, SimpleOrder simpleOrder){
+//        order.getSimpleOrders().add(simpleOrder);
+//        calcOrderFees(order);
+//    }
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);
     }

@@ -11,11 +11,13 @@ import java.util.ArrayList;
 
 @Service
 public interface OrderService {
+    Integer ALLOWED_DURATION = 60;
 
-    public abstract void calcOrderFees(Order order);
-    public abstract void calcShippingFees(Order order);
-    public abstract boolean shipOrder(Order order, Account account);
-    public abstract boolean deductOrder(Order order, Account account);
+    void calcOrderFees(Order order);
+    void calcShippingFees(Order order);
+    boolean shipOrder(Order order, Account account);
+    boolean deductOrder(Order order, Account account);
+    ArrayList<Order> cancelOrder(int orderId);
 
     public static ArrayList<Order> listOrders() {
         /////for testing
