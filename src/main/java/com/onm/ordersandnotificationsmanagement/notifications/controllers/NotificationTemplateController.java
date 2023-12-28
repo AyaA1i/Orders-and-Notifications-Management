@@ -16,4 +16,12 @@ public class NotificationTemplateController {
     public Queue<Notification> getNotifications(){
         return NotificationTemplateService.listAllNotifications();
     }
+    @RequestMapping(value = "/mostNotified",method = RequestMethod.GET)
+    public String getMostNotified(){
+        return NotificationTemplateService.getMostNotified();
+    }
+    @RequestMapping(value = "/mostUsedTemplate",method = RequestMethod.GET)
+    public String getMostUsedTemp(){
+        return NotificationTemplateService.getMostUsedTemplate();
+    }
 }

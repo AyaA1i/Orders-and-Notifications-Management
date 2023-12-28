@@ -8,6 +8,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Queue;
 
 @NoArgsConstructor
@@ -24,7 +27,7 @@ public class NotificationTemplateService {
             notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{z}",
                     notificationTemplate.getPlaceholders()[2]));
         }
-        Notification notification = new Notification(notificationTemplate.getTemp(), java.time.LocalDateTime.now());
+        Notification notification = new Notification(notificationTemplate.getTemp(), LocalDateTime.now());
         NotificationTemplateRepo.Notifications.add(notification);
     }
 
@@ -36,7 +39,7 @@ public class NotificationTemplateService {
     public void removeNotification() {
         while (true) {
             if (NotificationTemplateRepo.Notifications.isEmpty()) break;
-            Duration duration = Duration.between(NotificationTemplateRepo.Notifications.peek().getDate(), java.time.LocalDateTime.now());
+            Duration duration = Duration.between(NotificationTemplateRepo.Notifications.peek().getDate(), LocalDateTime.now());
             if (duration.toSeconds() > ALLOWED_DURATION) {
                 NotificationTemplateRepo.Notifications.poll();
             } else {
@@ -44,6 +47,25 @@ public class NotificationTemplateService {
             }
         }
     }
-    //
+
+    public static String getMostNotified(){
+        String mostNotified = null;
+        for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostNotified.entrySet()){
+            if((mostNotified == null )|| NotificationTemplate.mostNotified.get(mostNotified) < Entry.getValue()){
+                mostNotified = Entry.getKey();
+            }
+        }
+        return mostNotified;
+    }
+    public static String getMostUsedTemplate(){
+        String mostused = null;
+        for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostUsedTemp.entrySet()){
+            if((mostused == null )|| NotificationTemplate.mostUsedTemp.get(mostused) < Entry.getValue()){
+                mostused = Entry.getKey();
+            }
+        }
+        return mostused;
+    }
+
 
 }
