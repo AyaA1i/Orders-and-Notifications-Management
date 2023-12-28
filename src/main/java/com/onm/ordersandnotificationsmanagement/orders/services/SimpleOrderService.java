@@ -106,12 +106,8 @@ public class SimpleOrderService implements OrderService {
     public ArrayList<Order> cancelOrder(int orderId){
         Order order = orderRepo.searchById(orderId);
         Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
-        ArrayList<Order>arr = new ArrayList<>();
-        Order o = new SimpleOrder();
-        o.setEmail(String.valueOf(duration.toSeconds()));
-        arr.add(o);
         if(duration.toSeconds()>ALLOWED_DURATION){
-            return arr;
+            return null;
         }
         Account account = AccountService.accountRepo.getAccount(order.getEmail());
         account.setBalance(account.getBalance()+order.getOrderFees()+order.getShippingFees());
