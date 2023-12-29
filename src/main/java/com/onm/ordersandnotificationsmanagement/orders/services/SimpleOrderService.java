@@ -1,4 +1,5 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
+import ch.qos.logback.core.joran.sanity.Pair;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
@@ -10,6 +11,7 @@ import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
+import com.onm.ordersandnotificationsmanagement.products.repos.ProductRepo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -37,9 +40,9 @@ public class SimpleOrderService implements OrderService {
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
-        for (Product product: ((SimpleOrder)order).getProducts())
+        for (AbstractMap.SimpleEntry<Product, Integer> product: ((SimpleOrder)order).getProducts())
         {
-            fees += product.getPrice();
+            fees += (product.getKey().getPrice() * product.getValue());
         }
         order.setOrderFees(fees);
     }
@@ -67,8 +70,11 @@ public class SimpleOrderService implements OrderService {
         simpleOrder.setEmail(account.getEmail());
 
         // return all products' information
-        for (String i : orderAccount.getProdSerialNum()) {
-            addProduct(simpleOrder, productService.searchById(i));
+        for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
+            Product p = productService.searchById(i.first);
+            AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.second);
+            addProduct(simpleOrder, pair);
+            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
         }
         // add order to the account orders
         AccountService.addNewOrder(simpleOrder, account);
@@ -76,7 +82,9 @@ public class SimpleOrderService implements OrderService {
 
         if (!deductOrder(simpleOrder, account)) return false;
         if(!shipOrder(simpleOrder, account)) return false;
-        OrderRepo.add(simpleOrder);
+
+        OrderService.add(simpleOrder);
+
         // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
@@ -114,7 +122,7 @@ public class SimpleOrderService implements OrderService {
     @Override
     public boolean deductOrder(Order order, Account account) {
         calcOrderFees(order);
-        double newBalance = account.getBalance() - (order.getOrderFees());
+        double newBalance = account.getBalance() - order.getOrderFees();
         if (newBalance >= 0) {
             account.setBalance(newBalance);
         } else {
@@ -127,6 +135,11 @@ public class SimpleOrderService implements OrderService {
     {
         Account account = AccountService.getAccountByEmail(order.getEmail());
         account.setBalance(account.getBalance() + order.getOrderFees() + order.getShippingFees());
+
+        for (AbstractMap.SimpleEntry<Product, Integer> product : ((SimpleOrder)order).getProducts()) {
+            Product p = productService.searchById(product.getKey().getSerialNumber());
+            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
+        }
         account.getOrders().remove(order);
         OrderRepo.getOrders().remove(order);
         orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
@@ -145,7 +158,7 @@ public class SimpleOrderService implements OrderService {
      * @param order   the order
      * @param product the product
      */
-    public void addProduct(SimpleOrder order, Product product){
+    public void addProduct(SimpleOrder order, AbstractMap.SimpleEntry<Product, Integer> product){
         order.getProducts().add(product);
     }
 }
