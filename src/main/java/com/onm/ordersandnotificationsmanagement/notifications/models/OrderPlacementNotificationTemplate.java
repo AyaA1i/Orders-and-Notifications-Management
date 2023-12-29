@@ -5,7 +5,16 @@ import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.utilities.Channel;
 import com.onm.ordersandnotificationsmanagement.utilities.EmailChannel;
 
+/**
+ * The type Order placement notification template.
+ */
 public class OrderPlacementNotificationTemplate extends NotificationTemplate{
+    /**
+     * Instantiates a new Order placement notification template.
+     *
+     * @param account the account
+     * @param order   the order
+     */
     public OrderPlacementNotificationTemplate(Account account , Order order) {
         this.Placeholders = new String[]{account.getName() , String.valueOf(order.getOrderId())};
         languages.put("English","Dear {x} , your booking of the order with id : {y} is confirmed. " +
@@ -15,20 +24,6 @@ public class OrderPlacementNotificationTemplate extends NotificationTemplate{
         this.temp = languages.get(account.getLanguage());
         Channel ch = new EmailChannel();
         temp += ch.print();
-        storeUsedTemp(temp);
-        storeNotifiedAccounts(account);
-    }
-    private void storeUsedTemp(String temp){
-        if(mostUsedTemp.get(temp)==null)
-            mostUsedTemp.put(temp,0);
-        else
-            mostUsedTemp.put(temp,mostUsedTemp.get(temp)+1);
     }
 
-    private void storeNotifiedAccounts(Account account){
-        if(mostNotified.get(account.getEmail())==null)
-            mostNotified.put(account.getEmail(),0);
-        else
-            mostNotified.put(account.getEmail(),mostNotified.get(account.getEmail())+1);
-    }
 }

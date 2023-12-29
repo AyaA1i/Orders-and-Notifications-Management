@@ -9,6 +9,12 @@ import com.onm.ordersandnotificationsmanagement.products.models.Product;
 
 import java.util.ArrayList;
 
+/**
+ * The type Product repo.
+ */
 public class ProductRepo {
+    /**
+     * The constant productList.
+     */
     public static final ArrayList<Product> productList = new ArrayList<>();
 }

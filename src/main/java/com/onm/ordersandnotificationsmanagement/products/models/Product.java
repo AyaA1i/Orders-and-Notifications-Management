@@ -42,7 +42,7 @@ public class Product {
      *
      * @return the category
      */
-    String category;
+    Category category;
     /**
      * The Price.
      * -- GETTER --
@@ -51,21 +51,8 @@ public class Product {
      * @return the price
      */
     double price;
-
     /**
-     * Instantiates a new Product.
-     *
-     * @param serialNumber the serial number
-     * @param name         the name
-     * @param vendor       the vendor
-     * @param category     the category
-     * @param price        the price
+     * The Available pieces number.
      */
-    public Product(String serialNumber, String name, String vendor, String category, double price) {
-        this.serialNumber = serialNumber;
-        this.name = name;
-        this.vendor = vendor;
-        this.category = category;
-        this.price = price;
-    }
+    int availablePiecesNumber;
 }

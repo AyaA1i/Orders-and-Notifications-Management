@@ -8,9 +8,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+/**
+ * The type Account service.
+ */
 @Service
 public class AccountService {
+    /**
+     * The constant accountRepo.
+     */
     public static final AccountRepo accountRepo = new AccountRepo();
+
+    /**
+     * Sign up string.
+     *
+     * @param account the account
+     * @return the string
+     */
     public String signUp(Account account){
         if(!accountRepo.searchAccount(account)){
             AccountController.currentAccount = account;
@@ -18,6 +31,14 @@ public class AccountService {
         }
         return "This Account is Already Exist! \n";
     }
+
+    /**
+     * Sign in string.
+     *
+     * @param email    the email
+     * @param password the password
+     * @return the string
+     */
     public String signIn(String email, String password){
         Account tempAccount = accountRepo.searchAccount(email, password);
         if (tempAccount != null){
@@ -26,6 +47,10 @@ public class AccountService {
         }
         return "No Matching Information! \n";
     }
+
+    /**
+     * Sign out.
+     */
     public void signOut(){
         AccountController.currentAccount = null;
     }

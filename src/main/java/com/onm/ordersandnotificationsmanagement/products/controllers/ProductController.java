@@ -1,5 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.products.controllers;
 
+import com.onm.ordersandnotificationsmanagement.products.models.Category;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ProductController {
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<ArrayList<Product>> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Boolean> addProduct(@RequestBody Product product) {
         return ResponseEntity.ok(productService.addProduct(product));
     }
 
@@ -38,7 +39,7 @@ public class ProductController {
      * @return the response entity
      */
     @DeleteMapping("/remove/{serialNumber}")
-    public ResponseEntity<ArrayList<Product>> removeProduct(@PathVariable("serialNumber") String serialNumber) {
+    public ResponseEntity<Boolean> removeProduct(@PathVariable("serialNumber") String serialNumber) {
         return ResponseEntity.ok(productService.removeProduct(serialNumber));
     }
 
@@ -48,7 +49,18 @@ public class ProductController {
      * @return the response entity
      */
     @GetMapping("/list")
-    public ResponseEntity<ArrayList<Product>> listAllProducts() {
-        return ResponseEntity.ok(productService.listAllProducts());
+    public ResponseEntity<ArrayList<Product>> listAvailableProducts() {
+        return ResponseEntity.ok(productService.listAvailableProducts());
+    }
+
+    /**
+     * Count products response entity.
+     *
+     * @param category the category
+     * @return the response entity
+     */
+    @GetMapping("/{categoryName}")
+    public ResponseEntity<Integer> countProducts(@PathVariable(value = "categoryName") Category category) {
+        return ResponseEntity.ok(productService.countProducts(category));
     }
 }

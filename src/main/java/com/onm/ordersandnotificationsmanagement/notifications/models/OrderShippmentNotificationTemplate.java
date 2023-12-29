@@ -5,9 +5,18 @@ import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.utilities.Channel;
 import com.onm.ordersandnotificationsmanagement.utilities.SMSChannel;
 
+/**
+ * The type Order shipment notification template.
+ */
 public class OrderShippmentNotificationTemplate extends NotificationTemplate{
+    /**
+     * Instantiates a new Order shipment notification template.
+     *
+     * @param account the account
+     * @param order   the order
+     */
     public OrderShippmentNotificationTemplate(Account account , Order order) {
-        this.Placeholders = new String[]{account.getName() , String.valueOf(order.getOrderId())};
+        this.Placeholders = new String[]{account.getName() , String.valueOf(order.getOrderId()) , String.valueOf(order.getShippingFees())};
         languages.put("English","Dear {x} , your shipment of the order with id : {y} is confirmed and the shipment fees is {z}" +
                 ". thanks for using our store :) ");
         languages.put("German","Sehr geehrte {x}, Ihr Versand der Bestellung mit der ID: {y} ist bestätigt. " +
@@ -16,20 +25,6 @@ public class OrderShippmentNotificationTemplate extends NotificationTemplate{
         this.temp = languages.get(account.getLanguage());
         Channel ch = new SMSChannel();
         temp += ch.print();
-        storeUsedTemp(this.temp);
-        storeNotifiedAccounts(account);
-    }
-    private void storeUsedTemp(String temp){
-        if(mostUsedTemp.get(temp)==null)
-            mostUsedTemp.put(temp,0);
-        else
-            mostUsedTemp.put(temp,mostUsedTemp.get(temp)+1);
     }
 
-    private void storeNotifiedAccounts(Account account){
-        if(mostNotified.get(account.getPhoneNumber())==null)
-            mostNotified.put(account.getPhoneNumber(),0);
-        else
-            mostNotified.put(account.getPhoneNumber(),mostNotified.get(account.getPhoneNumber())+1);
-    }
 }

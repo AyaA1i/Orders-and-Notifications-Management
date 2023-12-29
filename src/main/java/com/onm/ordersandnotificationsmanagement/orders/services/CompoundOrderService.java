@@ -14,16 +14,28 @@ import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Map;
 
+/**
+ * The type Compound order service.
+ */
 @Setter
 @Getter
 @NoArgsConstructor
 @Service
+@Component
 public class CompoundOrderService implements OrderService {
+    /**
+     * The Orders made.
+     */
+    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
+
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -39,6 +51,13 @@ public class CompoundOrderService implements OrderService {
         order.setShippingFees(20.0);      // default compound order shipping fees
     }
 
+    /**
+     * Place order boolean.
+     *
+     * @param orderAccounts the order accounts
+     * @param email         the email
+     * @return the boolean
+     */
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
 
         CompoundOrder compoundOrder = new CompoundOrder();
@@ -73,7 +92,7 @@ public class CompoundOrderService implements OrderService {
             // create notification
             NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                     simpleOrder);
-            NotificationTemplateService.addNotification(NT);
+            NotificationTemplateService.addNotification(NT,account);
             // add order to account orders
             account.addNewOrder(simpleOrder);
         }
@@ -129,12 +148,30 @@ public class CompoundOrderService implements OrderService {
         } else {
             return false;
         }
-        NotificationTemplate NT = new OrderShippmentNotificationTemplate(account,
-                order);
-        NotificationTemplateService.addNotification(NT);
+        ordersMade.add(Map.entry(account,order));
         return true;
     }
+    @Scheduled(cron = "0/10 * * ? * *")
+    private void callShipNotification(){
+        if(ordersMade.isEmpty())return;
+        for(Map.Entry<Account,Order>entity : ordersMade){
+            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
+            if (duration.toSeconds() >= ALLOWED_DURATION) {
+                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
+                        entity.getValue());
+                NotificationTemplateService.addNotification(NT,entity.getKey());
+                ordersMade.remove(entity);
+                if(ordersMade.isEmpty())return;
+            }
+        }
+    }
 
+    /**
+     * Add product.
+     *
+     * @param order   the order
+     * @param product the product
+     */
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);
     }

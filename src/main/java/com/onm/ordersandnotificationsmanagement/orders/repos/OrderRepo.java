@@ -6,6 +6,10 @@ import lombok.Setter;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+
+/**
+ * The type Order repo.
+ */
 @Setter
 @Getter
 

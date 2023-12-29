@@ -1,6 +1,7 @@
 package com.onm.ordersandnotificationsmanagement.notifications.services;
 
-import com.onm.ordersandnotificationsmanagement.notifications.Notification;
+import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
+import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.repos.NotificationTemplateRepo;
 import lombok.NoArgsConstructor;
@@ -9,16 +10,26 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Queue;
 
+/**
+ * The type Notification template service.
+ */
 @NoArgsConstructor
 @Component
 public class NotificationTemplateService {
+    /**
+     * The constant ALLOWED_DURATION.
+     */
     public static Integer ALLOWED_DURATION = 180;
 
-    public static void addNotification(NotificationTemplate notificationTemplate) {
+    /**
+     * Add notification.
+     *
+     * @param notificationTemplate the notification template
+     */
+    public static void addNotification(NotificationTemplate notificationTemplate, Account account) {
         notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{x}",
                 notificationTemplate.getPlaceholders()[0]));
         notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{y}",
@@ -29,14 +40,24 @@ public class NotificationTemplateService {
         }
         Notification notification = new Notification(notificationTemplate.getTemp(), LocalDateTime.now());
         NotificationTemplateRepo.Notifications.add(notification);
+        storeUsedTemp(notificationTemplate.getTemp());
+        storeNotifiedAccounts(account);
     }
 
+    /**
+     * List all notifications queue.
+     *
+     * @return the queue
+     */
     public static Queue<Notification> listAllNotifications() {
         return NotificationTemplateRepo.Notifications;
     }
 
+    /**
+     * Remove notification.
+     */
     @Scheduled(cron = "0/10 * * ? * *")
-    public void removeNotification() {
+    private void removeNotification() {
         while (true) {
             if (NotificationTemplateRepo.Notifications.isEmpty()) break;
             Duration duration = Duration.between(NotificationTemplateRepo.Notifications.peek().getDate(), LocalDateTime.now());
@@ -48,6 +69,11 @@ public class NotificationTemplateService {
         }
     }
 
+    /**
+     * Get most notified string.
+     *
+     * @return the string
+     */
     public static String getMostNotified(){
         String mostNotified = null;
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostNotified.entrySet()){
@@ -57,6 +83,12 @@ public class NotificationTemplateService {
         }
         return mostNotified;
     }
+
+    /**
+     * Get most used template string.
+     *
+     * @return the string
+     */
     public static String getMostUsedTemplate(){
         String mostused = null;
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostUsedTemp.entrySet()){
@@ -66,6 +98,24 @@ public class NotificationTemplateService {
         }
         return mostused;
     }
+    private static void storeUsedTemp(String temp){
+        if(NotificationTemplate.mostUsedTemp.get(temp)==null)
+            NotificationTemplate.mostUsedTemp.put(temp,0);
+        else
+            NotificationTemplate.mostUsedTemp.put(temp,NotificationTemplate.mostUsedTemp.get(temp)+1);
+    }
 
+    private static void storeNotifiedAccounts(Account account){
+        if(NotificationTemplate.mostNotified.get(account.getPhoneNumber())==null)
+            NotificationTemplate.mostNotified.put(account.getPhoneNumber(),0);
+        else
+            NotificationTemplate.mostNotified.put(account.getPhoneNumber(),
+                    NotificationTemplate.mostNotified.get(account.getPhoneNumber())+1);
+        if(NotificationTemplate.mostNotified.get(account.getEmail())==null)
+            NotificationTemplate.mostNotified.put(account.getEmail(),0);
+        else
+            NotificationTemplate.mostNotified.put(account.getEmail(),
+                    NotificationTemplate.mostNotified.get(account.getEmail())+1);
+    }
 
 }

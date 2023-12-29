@@ -11,19 +11,78 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 
+/**
+ * The interface Order service.
+ */
 @Service
 public interface OrderService {
+    /**
+     * The constant orderRepo.
+     */
     OrderRepo orderRepo = new OrderRepo();
+    /**
+     * The constant productService.
+     */
     ProductService productService = new ProductService();
 
+    /**
+     * The constant ALLOWED_DURATION.
+     */
     Integer ALLOWED_DURATION = 60;
 
+    /**
+     * Calc order fees.
+     *
+     * @param order the order
+     */
     void calcOrderFees(Order order);
+
+    /**
+     * Calc shipping fees.
+     *
+     * @param order the order
+     */
     void calcShippingFees(Order order);
+
+    /**
+     * Ship order boolean.
+     *
+     * @param order   the order
+     * @param account the account
+     * @return the boolean
+     */
     boolean shipOrder(Order order, Account account);
+
+    /**
+     * Deduct order boolean.
+     *
+     * @param order   the order
+     * @param account the account
+     * @return the boolean
+     */
     boolean deductOrder(Order order, Account account);
+
+    /**
+     * Cancel order.
+     *
+     * @param order the order
+     */
     void cancelOrder(Order order);
+
+    /**
+     * Cancel order shipment.
+     *
+     * @param order the order
+     */
     void cancelOrderShipment(Order order);
+
+    /**
+     * Cancel boolean.
+     *
+     * @param orderId the order id
+     * @param ship    the ship
+     * @return the boolean
+     */
     static boolean cancel(int orderId, boolean ship){
         Order order = OrderService.searchById(orderId);
         Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
@@ -50,6 +109,12 @@ public interface OrderService {
             compoundOrderService.cancelOrder(order);
         return true;
     }
+
+    /**
+     * List orders array list.
+     *
+     * @return the array list
+     */
     static ArrayList<Order> listOrders() {
         return OrderRepo.getOrders();
     }
