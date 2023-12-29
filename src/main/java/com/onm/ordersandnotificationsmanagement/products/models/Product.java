@@ -55,22 +55,4 @@ public class Product {
      * The Available pieces number.
      */
     int availablePiecesNumber;
-
-//    /**
-//     * Instantiates a new Product.
-//     *
-//     * @param serialNumber the serial number
-//     * @param name         the name
-//     * @param vendor       the vendor
-//     * @param category     the category
-//     * @param price        the price
-//     */
-//    public Product(String serialNumber, String name, String vendor, Category category, double price, int availablePiecesNumber) {
-//        this.serialNumber = serialNumber;
-//        this.name = name;
-//        this.vendor = vendor;
-//        this.category = category;
-//        this.price = price;
-//        this.availablePiecesNumber = availablePiecesNumber;
-//    }
 }

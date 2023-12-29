@@ -1,4 +1,5 @@
 package com.onm.ordersandnotificationsmanagement.orders.models;
+import ch.qos.logback.core.joran.sanity.Pair;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ public class SimpleOrder extends Order {
     /**
      * The Products.
      */
-    ArrayList<Product> products;
+    ArrayList<Pair<Product, Integer>> products;
 
     /**
      * Instantiates a new Simple order.

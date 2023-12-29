@@ -1,4 +1,5 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
+import ch.qos.logback.core.joran.sanity.Pair;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
@@ -10,6 +11,7 @@ import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
+import com.onm.ordersandnotificationsmanagement.products.repos.ProductRepo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -67,8 +69,10 @@ public class SimpleOrderService implements OrderService {
         simpleOrder.setEmail(account.getEmail());
 
         // return all products' information
-        for (String i : orderAccount.getProdSerialNum()) {
-            addProduct(simpleOrder, productService.searchById(i));
+        for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
+            Product p = productService.searchById(i.first);
+            addProduct(simpleOrder, p);
+            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
         }
         // add order to the account orders
         account.addNewOrder(simpleOrder);
@@ -127,6 +131,9 @@ public class SimpleOrderService implements OrderService {
     {
         Account account = AccountService.accountRepo.getAccount(order.getEmail());
         account.setBalance(account.getBalance() + order.getOrderFees() + order.getShippingFees());
+        for (Product p : ((SimpleOrder)order).getProducts()) {
+            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
+        }
         account.getOrders().remove(order);
         OrderRepo.getOrders().remove(order);
         orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
