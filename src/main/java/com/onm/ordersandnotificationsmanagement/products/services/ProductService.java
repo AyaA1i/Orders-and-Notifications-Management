@@ -62,10 +62,10 @@ public class ProductService {
     }
 
     public Integer countProducts(Category category) {
-        Integer count = 0;
+        int count = 0;
         for (Product product : ProductRepo.productList) {
             if (product.getCategory() == category) {
-                count++;
+                count += product.getAvailablePiecesNumber();
             }
         }
         return count;
