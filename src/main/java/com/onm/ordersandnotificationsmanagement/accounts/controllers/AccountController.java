@@ -2,9 +2,14 @@ package com.onm.ordersandnotificationsmanagement.accounts.controllers;
 
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The type Account controller.
@@ -14,37 +19,32 @@ public class AccountController {
     /**
      * The constant currentAccount.
      */
-    public static Account currentAccount;
     private static final AccountService accountService = new AccountService();
 
     /**
      * Sign up string.
      *
      * @param account the account
-     * @return the string
-     */
-    @PostMapping ("/signUp")
-    public String signUp(@RequestBody Account account){
-        return accountService.signUp(account);
-    }
-
-    /**
-     * Sign in string.
      *
-     * @param email    the email
-     * @param password the password
      * @return the string
      */
-    @PostMapping ("/signIn/{email}/{password}")
-    public String signIn(@PathVariable String email, @PathVariable String password){
-        return accountService.signIn(email, password);
+    @PostMapping ("/createAccount")
+    public ResponseEntity<String> createAccount(@Valid @RequestBody Account account){
+        if(accountService.createAccount(account)){
+            return ResponseEntity.ok("Account created successfully :)\n");
+        }
+        return ResponseEntity.ok("This Account is Already Exist!\n");
     }
-
-    /**
-     * Sign out.
-     */
-    @RequestMapping("/signOut")
-    public void signOut(){
-        accountService.signOut();
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
     }
 }

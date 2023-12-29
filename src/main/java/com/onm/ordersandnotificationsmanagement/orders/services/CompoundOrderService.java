@@ -69,7 +69,7 @@ public class CompoundOrderService implements OrderService {
         for(OrderAccount orderAccount: orderAccounts)
         {
             // return all account information
-            Account account = AccountService.accountRepo.getAccount(orderAccount.getAccEmail());
+            Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
             if (account == null) return false;
 
             SimpleOrder simpleOrder = new SimpleOrder();
@@ -95,7 +95,7 @@ public class CompoundOrderService implements OrderService {
                     simpleOrder);
             NotificationTemplateService.addNotification(NT,account);
             // add order to account orders
-            account.addNewOrder(simpleOrder);
+            AccountService.addNewOrder(simpleOrder, account);
         }
 
         OrderRepo.add(compoundOrder);
@@ -119,7 +119,7 @@ public class CompoundOrderService implements OrderService {
     {
         for(SimpleOrder simpleOrder: ((CompoundOrder)order).getSimpleOrders())
         {
-            Account account = AccountService.accountRepo.getAccount(simpleOrder.getEmail());
+            Account account = AccountService.getAccountByEmail(simpleOrder.getEmail());
             account.setBalance(account.getBalance() + simpleOrder.getOrderFees() + simpleOrder.getShippingFees());
             account.getOrders().remove(simpleOrder);
             OrderRepo.getOrders().remove(simpleOrder);
@@ -133,7 +133,7 @@ public class CompoundOrderService implements OrderService {
     public void cancelOrderShipment(Order order) {
         for(SimpleOrder simpleOrder: ((CompoundOrder)order).getSimpleOrders())
         {
-            Account account = AccountService.accountRepo.getAccount(simpleOrder.getEmail());
+            Account account = AccountService.getAccountByEmail(simpleOrder.getEmail());
             account.setBalance(account.getBalance() + simpleOrder.getShippingFees());
             simpleOrder.setShippingFees(0);
         }

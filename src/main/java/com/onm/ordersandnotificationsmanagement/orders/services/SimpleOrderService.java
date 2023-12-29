@@ -58,7 +58,7 @@ public class SimpleOrderService implements OrderService {
     public boolean placeOrder(OrderAccount orderAccount) {
 
         // return all account information
-        Account account = AccountService.accountRepo.getAccount(orderAccount.getAccEmail());
+        Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
         if (account == null) return false;
 
         SimpleOrder simpleOrder = new SimpleOrder();
@@ -71,7 +71,7 @@ public class SimpleOrderService implements OrderService {
             addProduct(simpleOrder, productService.searchById(i));
         }
         // add order to the account orders
-        account.addNewOrder(simpleOrder);
+        AccountService.addNewOrder(simpleOrder, account);
         simpleOrder.setDate(java.time.LocalDateTime.now());
 
         if (!deductOrder(simpleOrder, account)) return false;
@@ -125,7 +125,7 @@ public class SimpleOrderService implements OrderService {
    @Override
     public void cancelOrder(Order order)
     {
-        Account account = AccountService.accountRepo.getAccount(order.getEmail());
+        Account account = AccountService.getAccountByEmail(order.getEmail());
         account.setBalance(account.getBalance() + order.getOrderFees() + order.getShippingFees());
         account.getOrders().remove(order);
         OrderRepo.getOrders().remove(order);
@@ -134,7 +134,7 @@ public class SimpleOrderService implements OrderService {
 
     @Override
     public void cancelOrderShipment(Order order) {
-        Account account = AccountService.accountRepo.getAccount(order.getEmail());
+        Account account = AccountService.getAccountByEmail(order.getEmail());
         account.setBalance(account.getBalance() + order.getShippingFees());
         order.setShippingFees(0);
     }

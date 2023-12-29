@@ -1,12 +1,10 @@
 package com.onm.ordersandnotificationsmanagement.accounts.services;
 
-import com.onm.ordersandnotificationsmanagement.accounts.controllers.AccountController;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.repos.AccountRepo;
-import lombok.Getter;
+import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * The type Account service.
@@ -14,44 +12,40 @@ import java.util.ArrayList;
 @Service
 public class AccountService {
     /**
-     * The constant accountRepo.
-     */
-    public static final AccountRepo accountRepo = new AccountRepo();
-
-    /**
      * Sign up string.
      *
      * @param account the account
      * @return the string
      */
-    public String signUp(Account account){
-        if(!accountRepo.searchAccount(account)){
-            AccountController.currentAccount = account;
-            return "Account created Successfully :) \n";
+    public boolean createAccount(Account account){
+        if(getAccountByEmail(account.getEmail()) == null){
+            AccountRepo.accountsList.add(account);
+            return true;
         }
-        return "This Account is Already Exist! \n";
+        return false;
     }
 
     /**
-     * Sign in string.
+     * Get account using email.
      *
-     * @param email    the email
-     * @param password the password
-     * @return the string
+     * @param email the email
+     * @return the account
      */
-    public String signIn(String email, String password){
-        Account tempAccount = accountRepo.searchAccount(email, password);
-        if (tempAccount != null){
-            AccountController.currentAccount = tempAccount;
-            return "Signed in Successfully :) \n";
+    public static Account getAccountByEmail(String email){
+        for(Account account: AccountRepo.accountsList)
+        {
+            if(Objects.equals(account.getEmail(), email))
+                return account;
         }
-        return "No Matching Information! \n";
+        return null;
     }
 
     /**
-     * Sign out.
+     * Add new order.
+     *
+     * @param order the order
      */
-    public void signOut(){
-        AccountController.currentAccount = null;
+    public static void addNewOrder(Order order, Account account){
+        account.getOrders().add(order);
     }
 }
