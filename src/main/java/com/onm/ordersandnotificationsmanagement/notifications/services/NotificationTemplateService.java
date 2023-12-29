@@ -57,7 +57,7 @@ public class NotificationTemplateService {
      * Remove notification.
      */
     @Scheduled(cron = "0/10 * * ? * *")
-    public void removeNotification() {
+    private void removeNotification() {
         while (true) {
             if (NotificationTemplateRepo.Notifications.isEmpty()) break;
             Duration duration = Duration.between(NotificationTemplateRepo.Notifications.peek().getDate(), LocalDateTime.now());
