@@ -1,11 +1,10 @@
 package com.onm.ordersandnotificationsmanagement.orders.models;
-import ch.qos.logback.core.joran.sanity.Pair;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * The type Simple order.
@@ -17,7 +16,7 @@ public class SimpleOrder extends Order {
     /**
      * The Products.
      */
-    ArrayList<AbstractMap.SimpleEntry<Product, Integer>> products;
+    ArrayList<Map.Entry<Product, Integer>> products;
 
     /**
      * Instantiates a new Simple order.

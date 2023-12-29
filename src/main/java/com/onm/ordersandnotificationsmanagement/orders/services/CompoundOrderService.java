@@ -43,7 +43,7 @@ public class CompoundOrderService implements OrderService {
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
-        for (AbstractMap.SimpleEntry<Product, Integer> product: ((SimpleOrder)order).getProducts())
+        for (Map.Entry<Product, Integer> product: ((SimpleOrder)order).getProducts())
         {
             fees += (product.getKey().getPrice() * product.getValue());
         }
@@ -67,43 +67,26 @@ public class CompoundOrderService implements OrderService {
         CompoundOrder compoundOrder = new CompoundOrder();
         compoundOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
         orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
+
+        Account account = AccountService.getAccountByEmail(email);
+        if (account == null) return false;
+
         compoundOrder.setEmail(email);
 
         for(OrderAccount orderAccount: orderAccounts)
         {
-            // return all account information
-            Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
-            if (account == null) return false;
+            Account account1 = AccountService.getAccountByEmail(orderAccount.getAccEmail());
 
-            SimpleOrder simpleOrder = new SimpleOrder();
-            simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
-            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
-            simpleOrder.setEmail(account.getEmail());
-            simpleOrder.setDate(LocalDateTime.now());
+            SimpleOrderService simpleOrderService = new SimpleOrderService();
+            SimpleOrder simpleOrder = simpleOrderService.placeOrder(orderAccount, false);
+            if(simpleOrder == null) return false;
 
-
-            // return all products' information
-            for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
-                Product p = productService.searchById(i.first);
-                AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.second);
-                addProduct(simpleOrder, pair);
-                p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
-            }
-            if(!deductOrder(simpleOrder, account)) return false;
-            if(!shipOrder(simpleOrder, account)) return false;       // deduct order fees
-
+            if(!shipOrder(simpleOrder, account1)) return false;       // deduct order fees
             compoundOrder.getSimpleOrders().add(simpleOrder);
 
             compoundOrder.setOrderFees(compoundOrder.getOrderFees() + simpleOrder.getOrderFees());
             compoundOrder.setShippingFees(compoundOrder.getShippingFees() + simpleOrder.getShippingFees());
-            // create notification
-            NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
-                    simpleOrder);
-            NotificationTemplateService.addNotification(NT,account);
-            // add order to account orders
-            AccountService.addNewOrder(simpleOrder, account);
         }
-
         OrderService.add(compoundOrder);
 
         return true;
@@ -130,7 +113,7 @@ public class CompoundOrderService implements OrderService {
             account.getOrders().remove(simpleOrder);
             OrderRepo.getOrders().remove(simpleOrder);
             orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
-            for (AbstractMap.SimpleEntry<Product, Integer> product : simpleOrder.getProducts()) {
+            for (Map.Entry<Product, Integer> product : simpleOrder.getProducts()) {
                 Product p = productService.searchById(product.getKey().getSerialNumber());
                 p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
             }

@@ -43,7 +43,7 @@ public class OrderController {
     @PostMapping(value = "/placeSimpleOrder")
     public ResponseEntity<Void> placeSimpleOrder(@RequestBody OrderAccount orderAccount){
 
-        if(simpleOrderService.placeOrder(orderAccount))
+        if(simpleOrderService.placeOrder(orderAccount, true) != null)
             return ResponseEntity.status(HttpStatus.CREATED).build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }

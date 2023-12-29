@@ -40,7 +40,7 @@ public class SimpleOrderService implements OrderService {
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
-        for (AbstractMap.SimpleEntry<Product, Integer> product: ((SimpleOrder)order).getProducts())
+        for (Map.Entry<Product, Integer> product: ((SimpleOrder)order).getProducts())
         {
             fees += (product.getKey().getPrice() * product.getValue());
         }
@@ -58,39 +58,44 @@ public class SimpleOrderService implements OrderService {
      * @param orderAccount the order account
      * @return the boolean
      */
-    public boolean placeOrder(OrderAccount orderAccount) {
+    public SimpleOrder placeOrder(OrderAccount orderAccount, boolean flag) {
 
         // return all account information
         Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
-        if (account == null) return false;
+        if (account == null) return null;
 
         SimpleOrder simpleOrder = new SimpleOrder();
         simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
         orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         simpleOrder.setEmail(account.getEmail());
+        simpleOrder.setDate(java.time.LocalDateTime.now());
 
         // return all products' information
-        for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
-            Product p = productService.searchById(i.first);
-            AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.second);
-            addProduct(simpleOrder, pair);
-            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
+        for (Map.Entry<String, Integer> i : orderAccount.getProdSerialNum()) {
+            Product p = productService.searchById(i.getKey());
+            System.out.println(i.getKey());
+            Map.Entry<Product, Integer> m = Map.entry(p, i.getValue());
+            addProduct(simpleOrder, m);
+            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.getValue());
         }
         // add order to the account orders
         AccountService.addNewOrder(simpleOrder, account);
-        simpleOrder.setDate(java.time.LocalDateTime.now());
 
-        if (!deductOrder(simpleOrder, account)) return false;
-        if(!shipOrder(simpleOrder, account)) return false;
+        if (!deductOrder(simpleOrder, account)) return null;
 
-        OrderService.add(simpleOrder);
+        // call from controller
+        if(flag)
+        {
+            if(!shipOrder(simpleOrder, account)) return null;
+            OrderService.add(simpleOrder);
+        }
 
         // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
         NotificationTemplateService.addNotification(NT,account);
 
-        return true;
+        return simpleOrder;
     }
 
     @Override
@@ -136,7 +141,7 @@ public class SimpleOrderService implements OrderService {
         Account account = AccountService.getAccountByEmail(order.getEmail());
         account.setBalance(account.getBalance() + order.getOrderFees() + order.getShippingFees());
 
-        for (AbstractMap.SimpleEntry<Product, Integer> product : ((SimpleOrder)order).getProducts()) {
+        for (Map.Entry<Product, Integer> product : ((SimpleOrder)order).getProducts()) {
             Product p = productService.searchById(product.getKey().getSerialNumber());
             p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
         }
@@ -158,7 +163,7 @@ public class SimpleOrderService implements OrderService {
      * @param order   the order
      * @param product the product
      */
-    public void addProduct(SimpleOrder order, AbstractMap.SimpleEntry<Product, Integer> product){
+    public void addProduct(SimpleOrder order, Map.Entry<Product, Integer> product){
         order.getProducts().add(product);
     }
 }
