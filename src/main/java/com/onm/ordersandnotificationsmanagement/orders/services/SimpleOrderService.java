@@ -4,15 +4,12 @@ import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.repos.NotificationTemplateRepo;
 import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
-import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
+import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
-import com.onm.ordersandnotificationsmanagement.accounts.repos.AccountRepo;
-import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 
 

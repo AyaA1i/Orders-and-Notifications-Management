@@ -1,17 +1,15 @@
 package com.onm.ordersandnotificationsmanagement.notifications.services;
 
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
-import com.onm.ordersandnotificationsmanagement.notifications.Notification;
+import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.repos.NotificationTemplateRepo;
-import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import lombok.NoArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Queue;
 

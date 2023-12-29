@@ -1,6 +1,5 @@
 package com.onm.ordersandnotificationsmanagement.notifications.controllers;
-import com.onm.ordersandnotificationsmanagement.notifications.Notification;
-import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

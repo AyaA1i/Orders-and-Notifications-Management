@@ -1,6 +1,5 @@
 package com.onm.ordersandnotificationsmanagement.notifications.repos;
-import com.onm.ordersandnotificationsmanagement.notifications.Notification;
-import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
