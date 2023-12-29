@@ -17,7 +17,7 @@ public class OrderShippmentNotificationTemplate extends NotificationTemplate{
      * @param order   the order
      */
     public OrderShippmentNotificationTemplate(Account account , Order order) {
-        this.Placeholders = new String[]{account.getName() , String.valueOf(order.getOrderId())};
+        this.Placeholders = new String[]{account.getName() , String.valueOf(order.getOrderId()) , String.valueOf(order.getShippingFees())};
         languages.put("English","Dear {x} , your shipment of the order with id : {y} is confirmed and the shipment fees is {z}" +
                 ". thanks for using our store :) ");
         languages.put("German","Sehr geehrte {x}, Ihr Versand der Bestellung mit der ID: {y} ist bestätigt. " +
