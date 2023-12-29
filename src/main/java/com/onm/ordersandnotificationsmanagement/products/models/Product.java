@@ -51,6 +51,9 @@ public class Product {
      * @return the price
      */
     double price;
+    /**
+     * The Available pieces number.
+     */
     int availablePiecesNumber;
 
 //    /**

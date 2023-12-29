@@ -1,5 +1,19 @@
 package com.onm.ordersandnotificationsmanagement.products.models;
 
+/**
+ * The enum Category.
+ */
 public enum Category {
-    SPORT, HOME, FOOD
+    /**
+     * Sport category.
+     */
+    SPORT,
+    /**
+     * Home category.
+     */
+    HOME,
+    /**
+     * Food category.
+     */
+    FOOD
 }

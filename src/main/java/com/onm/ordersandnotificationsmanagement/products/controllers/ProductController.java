@@ -53,6 +53,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.listAvailableProducts());
     }
 
+    /**
+     * Count products response entity.
+     *
+     * @param category the category
+     * @return the response entity
+     */
     @GetMapping("/{categoryName}")
     public ResponseEntity<Integer> countProducts(@PathVariable(value = "categoryName") Category category) {
         return ResponseEntity.ok(productService.countProducts(category));
