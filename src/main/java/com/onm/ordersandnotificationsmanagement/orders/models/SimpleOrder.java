@@ -4,6 +4,7 @@ import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,7 @@ public class SimpleOrder extends Order {
     /**
      * The Products.
      */
-    ArrayList<Pair<Product, Integer>> products;
+    ArrayList<AbstractMap.SimpleEntry<Product, Integer>> products;
 
     /**
      * Instantiates a new Simple order.

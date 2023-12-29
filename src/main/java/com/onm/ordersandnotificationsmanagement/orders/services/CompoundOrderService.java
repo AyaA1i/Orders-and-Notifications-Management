@@ -1,4 +1,5 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
+import ch.qos.logback.core.joran.sanity.Pair;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
@@ -18,7 +19,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.security.KeyPair;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -39,9 +43,9 @@ public class CompoundOrderService implements OrderService {
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
-        for (Product product: ((SimpleOrder)order).getProducts())
+        for (AbstractMap.SimpleEntry<Product, Integer> product: ((SimpleOrder)order).getProducts())
         {
-            fees += product.getPrice();
+            fees += (product.getKey().getPrice() * product.getValue());
         }
         order.setOrderFees(fees);
     }
@@ -79,8 +83,11 @@ public class CompoundOrderService implements OrderService {
 
 
             // return all products' information
-            for (String i : orderAccount.getProdSerialNum()) {
-                addProduct(simpleOrder, productService.searchById(String.valueOf(i)));
+            for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
+                Product p = productService.searchById(i.first);
+                AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.second);
+                addProduct(simpleOrder, pair);
+                p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
             }
             if(!deductOrder(simpleOrder, account)) return false;
             if(!shipOrder(simpleOrder, account)) return false;       // deduct order fees
@@ -123,6 +130,10 @@ public class CompoundOrderService implements OrderService {
             account.getOrders().remove(simpleOrder);
             OrderRepo.getOrders().remove(simpleOrder);
             orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
+            for (AbstractMap.SimpleEntry<Product, Integer> product : simpleOrder.getProducts()) {
+                Product p = productService.searchById(product.getKey().getSerialNumber());
+                p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
+            }
         }
         OrderRepo.getOrders().remove(order);
         orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
@@ -172,7 +183,7 @@ public class CompoundOrderService implements OrderService {
      * @param order   the order
      * @param product the product
      */
-    public void addProduct(SimpleOrder order, Product product){
+    public void addProduct(SimpleOrder order, AbstractMap.SimpleEntry<Product, Integer> product){
         order.getProducts().add(product);
     }
 }

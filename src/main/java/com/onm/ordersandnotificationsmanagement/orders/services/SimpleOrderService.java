@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -39,9 +40,9 @@ public class SimpleOrderService implements OrderService {
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
-        for (Product product: ((SimpleOrder)order).getProducts())
+        for (AbstractMap.SimpleEntry<Product, Integer> product: ((SimpleOrder)order).getProducts())
         {
-            fees += product.getPrice();
+            fees += (product.getKey().getPrice() * product.getValue());
         }
         order.setOrderFees(fees);
     }
@@ -71,7 +72,8 @@ public class SimpleOrderService implements OrderService {
         // return all products' information
         for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
             Product p = productService.searchById(i.first);
-            addProduct(simpleOrder, p);
+            AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.second);
+            addProduct(simpleOrder, pair);
             p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
         }
         // add order to the account orders
@@ -120,7 +122,7 @@ public class SimpleOrderService implements OrderService {
     @Override
     public boolean deductOrder(Order order, Account account) {
         calcOrderFees(order);
-        double newBalance = account.getBalance() - (order.getOrderFees());
+        double newBalance = account.getBalance() - order.getOrderFees();
         if (newBalance >= 0) {
             account.setBalance(newBalance);
         } else {
@@ -133,8 +135,10 @@ public class SimpleOrderService implements OrderService {
     {
         Account account = AccountService.accountRepo.getAccount(order.getEmail());
         account.setBalance(account.getBalance() + order.getOrderFees() + order.getShippingFees());
-        for (Product p : ((SimpleOrder)order).getProducts()) {
-            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
+
+        for (AbstractMap.SimpleEntry<Product, Integer> product : ((SimpleOrder)order).getProducts()) {
+            Product p = productService.searchById(product.getKey().getSerialNumber());
+            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
         }
         account.getOrders().remove(order);
         OrderRepo.getOrders().remove(order);
@@ -154,7 +158,7 @@ public class SimpleOrderService implements OrderService {
      * @param order   the order
      * @param product the product
      */
-    public void addProduct(SimpleOrder order, Product product){
+    public void addProduct(SimpleOrder order, AbstractMap.SimpleEntry<Product, Integer> product){
         order.getProducts().add(product);
     }
 }
