@@ -34,6 +34,9 @@ import java.util.Map;
 @Service
 @Component
 public class CompoundOrderService implements OrderService {
+    /**
+     * The Orders made.
+     */
     ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
 
     @Override
