@@ -28,7 +28,7 @@ public class ProductController {
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<ArrayList<Product>> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Boolean> addProduct(@RequestBody Product product) {
         return ResponseEntity.ok(productService.addProduct(product));
     }
 
@@ -39,7 +39,7 @@ public class ProductController {
      * @return the response entity
      */
     @DeleteMapping("/remove/{serialNumber}")
-    public ResponseEntity<ArrayList<Product>> removeProduct(@PathVariable("serialNumber") String serialNumber) {
+    public ResponseEntity<Boolean> removeProduct(@PathVariable("serialNumber") String serialNumber) {
         return ResponseEntity.ok(productService.removeProduct(serialNumber));
     }
 

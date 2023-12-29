@@ -18,24 +18,29 @@ public class ProductService {
      * @param product the product
      * @return the array list
      */
-    public ArrayList<Product> addProduct(Product product) {
+    public boolean addProduct(Product product) {
+        int sizeBefore = ProductRepo.productList.size();
         ProductRepo.productList.add(product);
-        return ProductRepo.productList;
+        return sizeBefore + 1 == ProductRepo.productList.size();
     }
 
     /**
      * Remove.
      *
      * @param serialNumber the serial number
+     * @return the boolean
      */
-    public ArrayList<Product> removeProduct(String serialNumber) {
+    public boolean removeProduct(String serialNumber) {
+        if (ProductRepo.productList.isEmpty())
+            return true;
+        int sizeBefore = ProductRepo.productList.size();
         for (Product product : ProductRepo.productList) {
             if (Objects.equals(product.getSerialNumber(), serialNumber)) {
                 ProductRepo.productList.remove(product);
                 break;
             }
         }
-        return ProductRepo.productList;
+        return sizeBefore - 1 == ProductRepo.productList.size();
     }
 
     /**
@@ -53,6 +58,12 @@ public class ProductService {
     }
 
 
+    /**
+     * Search by id product.
+     *
+     * @param id the id
+     * @return the product
+     */
     public Product searchById(String id){
         for(Product product: ProductRepo.productList){
             if(Objects.equals(product.getSerialNumber(), id))
@@ -61,6 +72,12 @@ public class ProductService {
         return null;
     }
 
+    /**
+     * Count products integer.
+     *
+     * @param category the category
+     * @return the integer
+     */
     public Integer countProducts(Category category) {
         int count = 0;
         for (Product product : ProductRepo.productList) {
