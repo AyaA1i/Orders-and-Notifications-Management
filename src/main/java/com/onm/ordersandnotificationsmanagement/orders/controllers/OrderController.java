@@ -98,12 +98,5 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    // Shipment cancel for bot(simple , compound)
-    // cancel compound order
-    // remove from notification queue // Aya
-    // Statics -
-    // Tokens
-    // class diagram
-    // notion
 
 }
