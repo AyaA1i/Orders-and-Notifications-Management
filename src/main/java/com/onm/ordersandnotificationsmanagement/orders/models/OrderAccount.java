@@ -1,4 +1,4 @@
-package com.onm.ordersandnotificationsmanagement.orders;
+package com.onm.ordersandnotificationsmanagement.orders.models;
 
 import lombok.Getter;
 import lombok.Setter;

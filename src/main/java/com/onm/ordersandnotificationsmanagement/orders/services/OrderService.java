@@ -25,7 +25,7 @@ public interface OrderService {
     void cancelOrder(Order order);
     void cancelOrderShipment(Order order);
     static boolean cancel(int orderId, boolean ship){
-        Order order = orderRepo.searchById(orderId);
+        Order order = OrderService.searchById(orderId);
         Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
         if(duration.toSeconds() > ALLOWED_DURATION){
             return false;
@@ -52,5 +52,15 @@ public interface OrderService {
     }
     static ArrayList<Order> listOrders() {
         return OrderRepo.getOrders();
+    }
+    public static void add(Order order){
+        OrderRepo.getOrders().add(order);
+    }
+    public static Order searchById(int id){
+        for(Order order: OrderRepo.getOrders()){
+            if(order.getOrderId() == id)
+                return order;
+        }
+        return null;
     }
 }

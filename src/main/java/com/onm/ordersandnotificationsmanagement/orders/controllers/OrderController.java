@@ -1,6 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.orders.controllers;
 
-import com.onm.ordersandnotificationsmanagement.orders.*;
+import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.services.CompoundOrderService;
 import com.onm.ordersandnotificationsmanagement.orders.services.OrderService;
 import com.onm.ordersandnotificationsmanagement.orders.services.SimpleOrderService;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
-
+@RequestMapping("/order")
 @RestController
 public class OrderController {
     private final SimpleOrderService simpleOrderService;

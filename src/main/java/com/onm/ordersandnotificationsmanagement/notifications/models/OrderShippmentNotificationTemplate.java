@@ -1,7 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.notifications.models;
 
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
-import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.utilities.Channel;
 import com.onm.ordersandnotificationsmanagement.utilities.SMSChannel;
