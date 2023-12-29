@@ -26,7 +26,7 @@ public class NotificationTemplateController {
     }
 
     /**
-     * Get most notified string.
+     * Get most notified phone number or Email.
      *
      * @return the string
      */
