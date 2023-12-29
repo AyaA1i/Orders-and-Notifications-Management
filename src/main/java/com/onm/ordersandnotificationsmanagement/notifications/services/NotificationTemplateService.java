@@ -13,11 +13,22 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Queue;
 
+/**
+ * The type Notification template service.
+ */
 @NoArgsConstructor
 @Component
 public class NotificationTemplateService {
+    /**
+     * The constant ALLOWED_DURATION.
+     */
     public static Integer ALLOWED_DURATION = 180;
 
+    /**
+     * Add notification.
+     *
+     * @param notificationTemplate the notification template
+     */
     public static void addNotification(NotificationTemplate notificationTemplate) {
         notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{x}",
                 notificationTemplate.getPlaceholders()[0]));
@@ -31,10 +42,18 @@ public class NotificationTemplateService {
         NotificationTemplateRepo.Notifications.add(notification);
     }
 
+    /**
+     * List all notifications queue.
+     *
+     * @return the queue
+     */
     public static Queue<Notification> listAllNotifications() {
         return NotificationTemplateRepo.Notifications;
     }
 
+    /**
+     * Remove notification.
+     */
     @Scheduled(cron = "0/10 * * ? * *")
     public void removeNotification() {
         while (true) {
@@ -48,6 +67,11 @@ public class NotificationTemplateService {
         }
     }
 
+    /**
+     * Get most notified string.
+     *
+     * @return the string
+     */
     public static String getMostNotified(){
         String mostNotified = null;
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostNotified.entrySet()){
@@ -57,6 +81,12 @@ public class NotificationTemplateService {
         }
         return mostNotified;
     }
+
+    /**
+     * Get most used template string.
+     *
+     * @return the string
+     */
     public static String getMostUsedTemplate(){
         String mostused = null;
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostUsedTemp.entrySet()){

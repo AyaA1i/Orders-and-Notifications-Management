@@ -6,7 +6,16 @@ import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.utilities.Channel;
 import com.onm.ordersandnotificationsmanagement.utilities.SMSChannel;
 
+/**
+ * The type Order shipment notification template.
+ */
 public class OrderShippmentNotificationTemplate extends NotificationTemplate{
+    /**
+     * Instantiates a new Order shipment notification template.
+     *
+     * @param account the account
+     * @param order   the order
+     */
     public OrderShippmentNotificationTemplate(Account account , Order order) {
         this.Placeholders = new String[]{account.getName() , String.valueOf(order.getOrderId())};
         languages.put("English","Dear {x} , your shipment of the order with id : {y} is confirmed and the shipment fees is {z}" +

@@ -22,6 +22,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+/**
+ * The type Compound order service.
+ */
 @Setter
 @Getter
 @NoArgsConstructor
@@ -42,6 +45,13 @@ public class CompoundOrderService implements OrderService {
         order.setShippingFees(20.0);      // default compound order shipping fees
     }
 
+    /**
+     * Place order boolean.
+     *
+     * @param orderAccounts the order accounts
+     * @param email         the email
+     * @return the boolean
+     */
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
 
         CompoundOrder compoundOrder = new CompoundOrder();
@@ -138,6 +148,12 @@ public class CompoundOrderService implements OrderService {
         return true;
     }
 
+    /**
+     * Add product.
+     *
+     * @param order   the order
+     * @param product the product
+     */
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);
     }

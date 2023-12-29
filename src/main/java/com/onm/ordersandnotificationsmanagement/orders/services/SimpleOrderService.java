@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
+/**
+ * The type Simple order service.
+ */
 @Setter
 @Getter
 @NoArgsConstructor
@@ -42,6 +45,12 @@ public class SimpleOrderService implements OrderService {
         order.setShippingFees(50.0); //default simple order shipping fees
     }
 
+    /**
+     * Place order boolean.
+     *
+     * @param orderAccount the order account
+     * @return the boolean
+     */
     public boolean placeOrder(OrderAccount orderAccount) {
 
         // return all account information
@@ -115,6 +124,12 @@ public class SimpleOrderService implements OrderService {
         order.setShippingFees(0);
     }
 
+    /**
+     * Add product.
+     *
+     * @param order   the order
+     * @param product the product
+     */
     public void addProduct(SimpleOrder order, Product product){
         order.getProducts().add(product);
     }

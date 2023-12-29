@@ -5,6 +5,10 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+
+/**
+ * The type Order account.
+ */
 @Setter
 @Getter
 @Component
