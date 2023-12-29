@@ -4,6 +4,7 @@ import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.repos.NotificationTemplateRepo;
 import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import com.onm.ordersandnotificationsmanagement.orders.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
@@ -15,11 +16,14 @@ import com.onm.ordersandnotificationsmanagement.products.services.ProductService
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 
 /**
@@ -30,6 +34,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Service
 public class SimpleOrderService implements OrderService {
+    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -66,18 +71,18 @@ public class SimpleOrderService implements OrderService {
         for (String i : orderAccount.getProdSerialNum()) {
             addProduct(simpleOrder, productService.searchById(i));
         }
+        // add order to the account orders
+        account.addNewOrder(simpleOrder);
+        simpleOrder.setDate(java.time.LocalDateTime.now());
 
         if (!deductOrder(simpleOrder, account)) return false;
         if(!shipOrder(simpleOrder, account)) return false;
         OrderRepo.add(simpleOrder);
-
         // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
         NotificationTemplateService.addNotification(NT);
-        // add order to the account orders
-        account.addNewOrder(simpleOrder);
-        simpleOrder.setDate(java.time.LocalDateTime.now());
+
         return true;
     }
 
@@ -90,12 +95,23 @@ public class SimpleOrderService implements OrderService {
         } else {
             return false;
         }
-        NotificationTemplate NT = new OrderShippmentNotificationTemplate(account,
-                order);
-        NotificationTemplateService.addNotification(NT);
+        ordersMade.add(Map.entry(account,order));
         return true;
     }
-
+    @Scheduled(cron = "0/10 * * ? * *")
+    private void callShipNotification(){
+        if(ordersMade.isEmpty())return;
+        for(Map.Entry<Account,Order>entity : ordersMade){
+            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
+            if (duration.toSeconds() >= ALLOWED_DURATION) {
+                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
+                        entity.getValue());
+                NotificationTemplateService.addNotification(NT);
+                ordersMade.remove(entity);
+                if(ordersMade.isEmpty())return;
+            }
+        }
+    }
     @Override
     public boolean deductOrder(Order order, Account account) {
         calcOrderFees(order);

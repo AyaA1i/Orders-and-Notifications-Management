@@ -16,11 +16,14 @@ import com.onm.ordersandnotificationsmanagement.products.services.ProductService
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * The type Compound order service.
@@ -29,7 +32,10 @@ import java.util.ArrayList;
 @Getter
 @NoArgsConstructor
 @Service
+@Component
 public class CompoundOrderService implements OrderService {
+    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
+
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -142,10 +148,22 @@ public class CompoundOrderService implements OrderService {
         } else {
             return false;
         }
-        NotificationTemplate NT = new OrderShippmentNotificationTemplate(account,
-                order);
-        NotificationTemplateService.addNotification(NT);
+        ordersMade.add(Map.entry(account,order));
         return true;
+    }
+    @Scheduled(cron = "0/10 * * ? * *")
+    private void callShipNotification(){
+        if(ordersMade.isEmpty())return;
+        for(Map.Entry<Account,Order>entity : ordersMade){
+            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
+            if (duration.toSeconds() >= ALLOWED_DURATION) {
+                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
+                        entity.getValue());
+                NotificationTemplateService.addNotification(NT);
+                ordersMade.remove(entity);
+                if(ordersMade.isEmpty())return;
+            }
+        }
     }
 
     /**
