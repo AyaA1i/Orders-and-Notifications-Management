@@ -1,5 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.products.controllers;
 
+import com.onm.ordersandnotificationsmanagement.products.models.Category;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,12 @@ public class ProductController {
      * @return the response entity
      */
     @GetMapping("/list")
-    public ResponseEntity<ArrayList<Product>> listAllProducts() {
-        return ResponseEntity.ok(productService.listAllProducts());
+    public ResponseEntity<ArrayList<Product>> listAvailableProducts() {
+        return ResponseEntity.ok(productService.listAvailableProducts());
+    }
+
+    @GetMapping("/{categoryName}")
+    public ResponseEntity<Integer> countProducts(@PathVariable(value = "categoryName") Category category) {
+        return ResponseEntity.ok(productService.countProducts(category));
     }
 }

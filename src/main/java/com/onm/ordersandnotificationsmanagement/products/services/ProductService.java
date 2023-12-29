@@ -1,5 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.products.services;
 
+import com.onm.ordersandnotificationsmanagement.products.models.Category;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import com.onm.ordersandnotificationsmanagement.products.repos.ProductRepo;
 import org.springframework.stereotype.Service;
@@ -42,8 +43,13 @@ public class ProductService {
      *
      * @return the array list
      */
-    public ArrayList<Product> listAllProducts() {
-        return ProductRepo.productList;
+    public ArrayList<Product> listAvailableProducts() {
+        ArrayList<Product> availableProducts = new ArrayList<>();
+        for (Product product : ProductRepo.productList) {
+            if (product.getAvailablePiecesNumber() > 0)
+                availableProducts.add(product);
+        }
+        return availableProducts;
     }
 
 
@@ -53,6 +59,16 @@ public class ProductService {
                 return product;
         }
         return null;
+    }
+
+    public Integer countProducts(Category category) {
+        Integer count = 0;
+        for (Product product : ProductRepo.productList) {
+            if (product.getCategory() == category) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }
