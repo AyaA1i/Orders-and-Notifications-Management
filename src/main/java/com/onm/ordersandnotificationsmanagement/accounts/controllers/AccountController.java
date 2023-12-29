@@ -33,7 +33,7 @@ public class AccountController {
         if(accountService.createAccount(account)){
             return ResponseEntity.ok("Account created successfully :)\n");
         }
-        return ResponseEntity.ok("This Account is Already Exist!\n");
+        return ResponseEntity.badRequest().body("This Account is Already Exist!\n");
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
