@@ -1,5 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.notifications.models;
 
+import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

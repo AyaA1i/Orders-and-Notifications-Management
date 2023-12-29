@@ -25,20 +25,6 @@ public class OrderPlacementNotificationTemplate extends NotificationTemplate{
         this.temp = languages.get(account.getLanguage());
         Channel ch = new EmailChannel();
         temp += ch.print();
-        storeUsedTemp(temp);
-        storeNotifiedAccounts(account);
-    }
-    private void storeUsedTemp(String temp){
-        if(mostUsedTemp.get(temp)==null)
-            mostUsedTemp.put(temp,0);
-        else
-            mostUsedTemp.put(temp,mostUsedTemp.get(temp)+1);
     }
 
-    private void storeNotifiedAccounts(Account account){
-        if(mostNotified.get(account.getEmail())==null)
-            mostNotified.put(account.getEmail(),0);
-        else
-            mostNotified.put(account.getEmail(),mostNotified.get(account.getEmail())+1);
-    }
 }

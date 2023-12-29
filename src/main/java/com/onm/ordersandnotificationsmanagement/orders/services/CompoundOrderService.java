@@ -95,7 +95,7 @@ public class CompoundOrderService implements OrderService {
             // create notification
             NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                     simpleOrder);
-            NotificationTemplateService.addNotification(NT);
+            NotificationTemplateService.addNotification(NT,account);
             // add order to account orders
             account.addNewOrder(simpleOrder);
         }
@@ -162,7 +162,7 @@ public class CompoundOrderService implements OrderService {
             if (duration.toSeconds() >= ALLOWED_DURATION) {
                 NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
                         entity.getValue());
-                NotificationTemplateService.addNotification(NT);
+                NotificationTemplateService.addNotification(NT,entity.getKey());
                 ordersMade.remove(entity);
                 if(ordersMade.isEmpty())return;
             }
