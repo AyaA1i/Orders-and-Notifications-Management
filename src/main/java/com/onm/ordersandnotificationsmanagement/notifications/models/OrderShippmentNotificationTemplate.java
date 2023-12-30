@@ -2,8 +2,8 @@ package com.onm.ordersandnotificationsmanagement.notifications.models;
 
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
-import com.onm.ordersandnotificationsmanagement.utilities.Channel;
-import com.onm.ordersandnotificationsmanagement.utilities.SMSChannel;
+import com.onm.ordersandnotificationsmanagement.notifications.services.Notifier;
+import com.onm.ordersandnotificationsmanagement.notifications.services.SMSNotifierDecorator;
 
 /**
  * The type Order shipment notification template.
@@ -23,8 +23,6 @@ public class OrderShippmentNotificationTemplate extends NotificationTemplate{
                 "wird bestätigt und die Versandkosten betragen {z}" +
                 "Danke, dass Sie unseren Shop nutzen :)");
         this.temp = languages.get(account.getLanguage());
-        Channel ch = new SMSChannel();
-        temp += ch.print();
     }
 
 }

@@ -38,5 +38,8 @@ public class Account {
     @Digits(integer = 1000000000, fraction = 10, message = "Balance must be a numeric value with up to 10 integer digits and 2 fraction digits")
     private Double balance;
 
+    @Pattern(regexp = "^(SMS|Email|Both)$", message = "Notification channel must be SMS ,Email or both")
+    private String notificationChannel;
+
     private ArrayList<Order> orders = new ArrayList<>();
 }

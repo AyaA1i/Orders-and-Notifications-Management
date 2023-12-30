@@ -41,6 +41,9 @@ public class NotificationTemplateService {
                     notificationTemplate.getPlaceholders()[2]));
         }
         Notification notification = new Notification(notificationTemplate.getTemp(), LocalDateTime.now());
+        Notifier notifier = new Notifier();
+        notifier = new SMSNotifierDecorator(new EmailNotifierDecorator(notifier));
+        notification.setTemp(notifier.sendNotification(notification));
         NotificationTemplateRepo.Notifications.add(notification);
         storeNotifiedAccounts(account);
     }
