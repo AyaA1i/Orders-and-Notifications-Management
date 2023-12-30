@@ -6,7 +6,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The type Exception handler.
+ */
 public class ExceptionHandler {
+    /**
+     * Gets error handler map.
+     *
+     * @param ex the ex
+     * @return the error handler map
+     */
     public static Map<String, String> getErrorHandlerMap(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {

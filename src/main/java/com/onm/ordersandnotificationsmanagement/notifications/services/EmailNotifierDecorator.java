@@ -9,6 +9,11 @@ import com.onm.ordersandnotificationsmanagement.notifications.models.Notificatio
  */
 public class EmailNotifierDecorator extends NotifierDecorator {
 
+    /**
+     * Instantiates a new Email notifier decorator.
+     *
+     * @param notifier the notifier
+     */
     public EmailNotifierDecorator(Notifier notifier) {
         super(notifier);
     }

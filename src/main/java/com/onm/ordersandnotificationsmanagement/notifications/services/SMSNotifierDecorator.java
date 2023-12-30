@@ -8,6 +8,11 @@ import com.onm.ordersandnotificationsmanagement.notifications.models.Notificatio
  * The type Sms channel.
  */
 public class SMSNotifierDecorator extends NotifierDecorator {
+    /**
+     * Instantiates a new Sms notifier decorator.
+     *
+     * @param notifier the notifier
+     */
     public SMSNotifierDecorator(Notifier notifier) {
         super(notifier);
     }

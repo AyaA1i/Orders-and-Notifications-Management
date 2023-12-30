@@ -73,6 +73,13 @@ public class ProductController {
     public ResponseEntity<Integer> countProducts(@Valid @PathVariable(value = "categoryName") Category category) {
         return ResponseEntity.ok(productService.countProducts(category));
     }
+
+    /**
+     * Handle validation exceptions map.
+     *
+     * @param ex the ex
+     * @return the map
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

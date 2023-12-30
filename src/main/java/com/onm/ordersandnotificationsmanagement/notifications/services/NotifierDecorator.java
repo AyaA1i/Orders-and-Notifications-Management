@@ -4,6 +4,9 @@ import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 import lombok.AllArgsConstructor;
 
+/**
+ * The type Notifier decorator.
+ */
 @AllArgsConstructor
 public abstract class NotifierDecorator extends Notifier{
     private Notifier notifier;

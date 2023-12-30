@@ -27,6 +27,9 @@ public class NotificationTemplateService {
 
     private static Map<String, Notifier> availableChannels;
 
+    /**
+     * Instantiates a new Notification template service.
+     */
     NotificationTemplateService() {
         availableChannels = new HashMap<>();
         addChannel("SMS", new SMSNotifierDecorator(new Notifier()));
@@ -34,9 +37,16 @@ public class NotificationTemplateService {
         addChannel("Both", new EmailNotifierDecorator(new SMSNotifierDecorator(new Notifier())));
     }
 
+    /**
+     * Add channel.
+     *
+     * @param channelName the channel name
+     * @param notifier    the notifier
+     */
     public void addChannel(String channelName, Notifier notifier) {
         availableChannels.put(channelName, notifier);
     }
+
     /**
      * Add notification.
      *

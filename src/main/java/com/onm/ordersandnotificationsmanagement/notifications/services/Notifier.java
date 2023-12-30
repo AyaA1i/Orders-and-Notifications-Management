@@ -10,6 +10,8 @@ public class Notifier {
     /**
      * Print string.
      *
+     * @param notification the notification
+     * @param account      the account
      * @return the string
      */
     public String sendNotification(Notification notification, Account account) {
