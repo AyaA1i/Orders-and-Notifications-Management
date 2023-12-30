@@ -85,6 +85,11 @@ public interface OrderService {
      */
     static boolean cancel(int orderId, boolean ship){
         Order order = OrderService.searchById(orderId);
+
+        // order not found
+        if (order == null)
+            return false;
+
         Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
         if(duration.toSeconds() > ALLOWED_DURATION){
             return false;

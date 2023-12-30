@@ -59,11 +59,11 @@ public class OrderController {
      * @return the response entity
      */
     @PostMapping(value = "/placeCompoundOrder/{email}")
-    public ResponseEntity<Void> placeCompoundOrder(@RequestBody ArrayList<OrderAccount> orderAccounts,
+    public ResponseEntity<String> placeCompoundOrder(@RequestBody ArrayList<OrderAccount> orderAccounts,
                                                    @PathVariable(value = "email") String email){
         if(compoundOrderService.placeOrder(orderAccounts,email))
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.ok("Order Placed Successfully :)");
+        return ResponseEntity.badRequest().body("Unable to place order!");
     }
 
     /**

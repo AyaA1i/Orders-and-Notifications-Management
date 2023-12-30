@@ -1,5 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.notifications.services;
 
+import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 
 /**
@@ -11,7 +12,7 @@ public class Notifier {
      *
      * @return the string
      */
-    public String sendNotification(Notification notification) {
+    public String sendNotification(Notification notification, Account account) {
         return notification.temp;
     }
 }

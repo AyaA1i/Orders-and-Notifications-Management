@@ -56,6 +56,8 @@ public class SimpleOrderService implements OrderService {
      * @return the boolean
      */
     public boolean placeOrder(OrderAccount orderAccount) {
+        if (orderAccount.getProdSerialNum() == null)
+            return false;
 
         // return all account information
         Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
@@ -63,15 +65,19 @@ public class SimpleOrderService implements OrderService {
 
         SimpleOrder simpleOrder = new SimpleOrder();
         simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
-        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         simpleOrder.setEmail(account.getEmail());
+
 
         // return all products' information
         for (Map.Entry<String, Integer> i : orderAccount.getProdSerialNum()) {
             Product p = productService.searchById(i.getKey());
             Map.Entry<Product, Integer> pair = Map.entry(p, i.getValue());
             addProduct(simpleOrder, pair);
-            p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.getValue());
+            int curAvailProdNum = p.getAvailablePiecesNumber();
+            if (curAvailProdNum >= i.getValue())
+                p.setAvailablePiecesNumber(curAvailProdNum - i.getValue());
+            else
+                return false;
         }
         // add order to the account orders
         AccountService.addNewOrder(simpleOrder, account);
@@ -86,6 +92,8 @@ public class SimpleOrderService implements OrderService {
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
         NotificationTemplateService.addNotification(NT,account);
+
+        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
 
         return true;
     }

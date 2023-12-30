@@ -64,31 +64,34 @@ public class CompoundOrderService implements OrderService {
      * @return the boolean
      */
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
-
         CompoundOrder compoundOrder = new CompoundOrder();
         compoundOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
-        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         compoundOrder.setEmail(email);
 
         for(OrderAccount orderAccount: orderAccounts)
         {
+            if (orderAccount.getProdSerialNum() == null)
+                return false;
+
             // return all account information
             Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
             if (account == null) return false;
 
             SimpleOrder simpleOrder = new SimpleOrder();
             simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
-            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
             simpleOrder.setEmail(account.getEmail());
             simpleOrder.setDate(LocalDateTime.now());
-
 
             // return all products' information
             for (Map.Entry<String, Integer> i : orderAccount.getProdSerialNum()) {
                 Product p = productService.searchById(i.getKey());
-                AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.getValue());
+                Map.Entry<Product, Integer> pair = Map.entry(p, i.getValue());
                 addProduct(simpleOrder, pair);
-                p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.getValue());
+                int curAvailProdNum = p.getAvailablePiecesNumber();
+                if (curAvailProdNum >= i.getValue())
+                    p.setAvailablePiecesNumber(curAvailProdNum - i.getValue());
+                else
+                    return false;
             }
             if(!deductOrder(simpleOrder, account)) return false;
             if(!shipOrder(simpleOrder, account)) return false;       // deduct order fees
@@ -103,9 +106,12 @@ public class CompoundOrderService implements OrderService {
             NotificationTemplateService.addNotification(NT,account);
             // add order to account orders
             AccountService.addNewOrder(simpleOrder, account);
+
+            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         }
 
         OrderService.add(compoundOrder);
+        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
 
         return true;
     }

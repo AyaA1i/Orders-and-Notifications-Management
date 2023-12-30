@@ -35,7 +35,7 @@ public class Account {
     @Pattern(regexp = "^(German|English)$", message = "Language must be either German or English")
     private String language;
 
-    @Digits(integer = 1000000000, fraction = 10, message = "Balance must be a numeric value with up to 10 integer digits and 2 fraction digits")
+    @Digits(integer = 1000000000, fraction = 10, message = "Balance must be a numeric value with up to 1000000000 integer digits and 10 fraction digits")
     private Double balance;
 
     @Pattern(regexp = "^(SMS|Email|Both)$", message = "Notification channel must be SMS ,Email or both")

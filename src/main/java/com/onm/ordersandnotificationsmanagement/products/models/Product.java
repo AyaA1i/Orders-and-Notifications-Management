@@ -1,5 +1,8 @@
 package com.onm.ordersandnotificationsmanagement.products.models;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,10 +53,12 @@ public class Product {
      *
      * @return the price
      */
+    @DecimalMin(value = "0")
     double price;
     /**
      * The Available pieces number.
      */
+    @DecimalMin(value = "0")
     int availablePiecesNumber;
     @Override
     public String toString() {

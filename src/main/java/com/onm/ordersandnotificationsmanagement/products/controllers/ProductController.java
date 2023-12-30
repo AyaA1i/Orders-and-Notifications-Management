@@ -3,11 +3,17 @@ package com.onm.ordersandnotificationsmanagement.products.controllers;
 import com.onm.ordersandnotificationsmanagement.products.models.Category;
 import com.onm.ordersandnotificationsmanagement.products.models.Product;
 import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import static com.onm.ordersandnotificationsmanagement.utilities.ExceptionHandler.getErrorHandlerMap;
 
 /**
  * The type Product controller.
@@ -28,7 +34,7 @@ public class ProductController {
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<Boolean> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Boolean> addProduct(@Valid @RequestBody Product product) {
         return ResponseEntity.ok(productService.addProduct(product));
     }
 
@@ -60,7 +66,14 @@ public class ProductController {
      * @return the response entity
      */
     @GetMapping("/{categoryName}")
-    public ResponseEntity<Integer> countProducts(@PathVariable(value = "categoryName") Category category) {
+    public ResponseEntity<Integer> countProducts(@Valid @PathVariable(value = "categoryName") Category category) {
         return ResponseEntity.ok(productService.countProducts(category));
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        return getErrorHandlerMap(ex);
+    }
+
 }

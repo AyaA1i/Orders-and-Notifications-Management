@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
 /**
  * The type Notification template service.
  */
-@NoArgsConstructor
 @Component
 public class NotificationTemplateService {
     /**
@@ -24,6 +24,18 @@ public class NotificationTemplateService {
      */
     public static Integer ALLOWED_DURATION = 180;
 
+    private static Map<String, Notifier> availableChannels;
+
+    NotificationTemplateService() {
+        availableChannels = new HashMap<>();
+        addChannel("SMS", new SMSNotifierDecorator(new Notifier()));
+        addChannel("Email", new EmailNotifierDecorator(new Notifier()));
+        addChannel("Both", new EmailNotifierDecorator(new SMSNotifierDecorator(new Notifier())));
+    }
+
+    public void addChannel(String channelName, Notifier notifier) {
+        availableChannels.put(channelName, notifier);
+    }
     /**
      * Add notification.
      *
@@ -41,11 +53,9 @@ public class NotificationTemplateService {
                     notificationTemplate.getPlaceholders()[2]));
         }
         Notification notification = new Notification(notificationTemplate.getTemp(), LocalDateTime.now());
-        Notifier notifier = new Notifier();
-        notifier = new SMSNotifierDecorator(new EmailNotifierDecorator(notifier));
-        notification.setTemp(notifier.sendNotification(notification));
+        Notifier notifier = availableChannels.get(account.getNotificationChannel());
+        notification.setTemp(notifier.sendNotification(notification, account));
         NotificationTemplateRepo.Notifications.add(notification);
-        storeNotifiedAccounts(account);
     }
 
     /**
@@ -108,18 +118,4 @@ public class NotificationTemplateService {
         else
             NotificationTemplate.mostUsedTemp.put(temp,NotificationTemplate.mostUsedTemp.get(temp)+1);
     }
-
-    private static void storeNotifiedAccounts(Account account){
-        if(NotificationTemplate.mostNotified.get(account.getPhoneNumber())==null)
-            NotificationTemplate.mostNotified.put(account.getPhoneNumber(),0);
-        else
-            NotificationTemplate.mostNotified.put(account.getPhoneNumber(),
-                    NotificationTemplate.mostNotified.get(account.getPhoneNumber())+1);
-        if(NotificationTemplate.mostNotified.get(account.getEmail())==null)
-            NotificationTemplate.mostNotified.put(account.getEmail(),0);
-        else
-            NotificationTemplate.mostNotified.put(account.getEmail(),
-                    NotificationTemplate.mostNotified.get(account.getEmail())+1);
-    }
-
 }
