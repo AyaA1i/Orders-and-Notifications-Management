@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,12 +39,12 @@ public class CompoundOrderService implements OrderService {
     /**
      * The Orders made.
      */
-    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
+   Map<Account,Order>ordersMade = new HashMap<>();
 
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
-        for (AbstractMap.SimpleEntry<Product, Integer> product: ((SimpleOrder)order).getProducts())
+        for (Map.Entry<Product, Integer> product: ((SimpleOrder)order).getProducts())
         {
             fees += (product.getKey().getPrice() * product.getValue());
         }
@@ -83,11 +84,11 @@ public class CompoundOrderService implements OrderService {
 
 
             // return all products' information
-            for (Pair<String, Integer> i : orderAccount.getProdSerialNum()) {
-                Product p = productService.searchById(i.first);
-                AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.second);
+            for (Map.Entry<String, Integer> i : orderAccount.getProdSerialNum()) {
+                Product p = productService.searchById(i.getKey());
+                AbstractMap.SimpleEntry<Product, Integer> pair = new AbstractMap.SimpleEntry<>(p, i.getValue());
                 addProduct(simpleOrder, pair);
-                p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.second);
+                p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() - i.getValue());
             }
             if(!deductOrder(simpleOrder, account)) return false;
             if(!shipOrder(simpleOrder, account)) return false;       // deduct order fees
@@ -130,7 +131,7 @@ public class CompoundOrderService implements OrderService {
             account.getOrders().remove(simpleOrder);
             OrderRepo.getOrders().remove(simpleOrder);
             orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
-            for (AbstractMap.SimpleEntry<Product, Integer> product : simpleOrder.getProducts()) {
+            for (Map.Entry<Product, Integer> product : simpleOrder.getProducts()) {
                 Product p = productService.searchById(product.getKey().getSerialNumber());
                 p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
             }
@@ -159,13 +160,13 @@ public class CompoundOrderService implements OrderService {
         } else {
             return false;
         }
-        ordersMade.add(Map.entry(account,order));
+        ordersMade.put(account,order);
         return true;
     }
     @Scheduled(cron = "0/10 * * ? * *")
     private void callShipNotification(){
         if(ordersMade.isEmpty())return;
-        for(Map.Entry<Account,Order>entity : ordersMade){
+        for(Map.Entry<Account,Order>entity : ordersMade.entrySet()){
             Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
             if (duration.toSeconds() >= ALLOWED_DURATION) {
                 NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
@@ -183,7 +184,7 @@ public class CompoundOrderService implements OrderService {
      * @param order   the order
      * @param product the product
      */
-    public void addProduct(SimpleOrder order, AbstractMap.SimpleEntry<Product, Integer> product){
+    public void addProduct(SimpleOrder order, Map.Entry<Product, Integer> product){
         order.getProducts().add(product);
     }
 }

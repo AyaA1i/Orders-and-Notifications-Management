@@ -55,4 +55,9 @@ public class Product {
      * The Available pieces number.
      */
     int availablePiecesNumber;
+    @Override
+    public String toString() {
+        return "Product{serialNumber='" + serialNumber + "', name='" + name + "', price=" + price + "}";
+    }
+
 }
