@@ -19,9 +19,11 @@ public class ProductService {
      * @return the array list
      */
     public boolean addProduct(Product product) {
-        int sizeBefore = ProductRepo.productList.size();
-        ProductRepo.productList.add(product);
-        return sizeBefore + 1 == ProductRepo.productList.size();
+        if (searchById(product.getSerialNumber()) == null) {
+            ProductRepo.productList.add(product);
+            return true;
+        }
+        return false;
     }
 
     /**

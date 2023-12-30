@@ -34,8 +34,10 @@ public class ProductController {
      * @return the response entity
      */
     @PostMapping("/add")
-    public ResponseEntity<Boolean> addProduct(@Valid @RequestBody Product product) {
-        return ResponseEntity.ok(productService.addProduct(product));
+    public ResponseEntity<String> addProduct(@Valid @RequestBody Product product) {
+        if (productService.addProduct(product))
+            return ResponseEntity.ok("Product added successfully!");
+        return ResponseEntity.badRequest().body("Unable to add product!");
     }
 
     /**
@@ -45,8 +47,10 @@ public class ProductController {
      * @return the response entity
      */
     @DeleteMapping("/remove/{serialNumber}")
-    public ResponseEntity<Boolean> removeProduct(@PathVariable("serialNumber") String serialNumber) {
-        return ResponseEntity.ok(productService.removeProduct(serialNumber));
+    public ResponseEntity<String> removeProduct(@PathVariable("serialNumber") String serialNumber) {
+        if (productService.removeProduct(serialNumber))
+            return ResponseEntity.ok("Product removed successfully!");
+        return ResponseEntity.badRequest().body("Unable to remove product!");
     }
 
     /**

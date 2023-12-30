@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 
 /**
@@ -89,13 +90,24 @@ public class NotificationTemplateService {
      * @return the string
      */
     public static String getMostNotified(){
-        String mostNotified = null;
+        if (NotificationTemplate.mostNotified.isEmpty())
+            return "No Notifications Sent!";
+
+        String mostused = null;
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostNotified.entrySet()){
-            if((mostNotified == null )|| NotificationTemplate.mostNotified.get(mostNotified) < Entry.getValue()){
-                mostNotified = Entry.getKey();
+            if((mostused == null )|| NotificationTemplate.mostNotified.get(mostused) < Entry.getValue()){
+                mostused = Entry.getKey();
             }
         }
-        return mostNotified;
+
+        StringBuilder tmp = new StringBuilder(mostused);
+        for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostNotified.entrySet()){
+            if (Objects.equals(NotificationTemplate.mostNotified.get(mostused), Entry.getValue())) {
+                tmp.append(", ").append(Entry.getKey());
+            }
+        }
+
+        return tmp.toString();
     }
 
     /**
@@ -104,13 +116,24 @@ public class NotificationTemplateService {
      * @return the string
      */
     public static String getMostUsedTemplate(){
+        if (NotificationTemplate.mostUsedTemp.isEmpty())
+            return "No Templates Used!";
+
         String mostused = null;
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostUsedTemp.entrySet()){
             if((mostused == null )|| NotificationTemplate.mostUsedTemp.get(mostused) < Entry.getValue()){
                 mostused = Entry.getKey();
             }
         }
-        return mostused;
+
+        StringBuilder tmp = new StringBuilder(mostused);
+        for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostUsedTemp.entrySet()){
+            if (Objects.equals(NotificationTemplate.mostUsedTemp.get(mostused), Entry.getValue())) {
+                tmp.append(", ").append(Entry.getKey());
+            }
+        }
+
+        return tmp.toString();
     }
     private static void storeUsedTemp(String temp){
         if(NotificationTemplate.mostUsedTemp.get(temp)==null)

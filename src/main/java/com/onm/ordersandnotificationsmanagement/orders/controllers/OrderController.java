@@ -44,11 +44,11 @@ public class OrderController {
      * @return the response entity
      */
     @PostMapping(value = "/placeSimpleOrder")
-    public ResponseEntity<Void> placeSimpleOrder(@RequestBody OrderAccount orderAccount){
+    public ResponseEntity<String> placeSimpleOrder(@RequestBody OrderAccount orderAccount){
 
         if(simpleOrderService.placeOrder(orderAccount))
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.ok("Order Placed Successfully :)");
+        return ResponseEntity.badRequest().body("Unable to place order!");
     }
 
     /**
@@ -83,10 +83,10 @@ public class OrderController {
      * @return the response entity
      */
     @DeleteMapping(value = "/cancelOrder/{id}")
-    public ResponseEntity<Void> cancelOrder( @PathVariable(value = "id") int id){
+    public ResponseEntity<String> cancelOrder( @PathVariable(value = "id") int id){
         if(OrderService.cancel(id, false))
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.ok("Order Cancelled Successfully!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Can't Cancel Order!");
     }
 
     /**
@@ -96,10 +96,10 @@ public class OrderController {
      * @return the response entity
      */
     @DeleteMapping(value = "/cancelOrderShipping/{id}")
-    public ResponseEntity<Void> cancelOrderShipping( @PathVariable(value = "id") int id){
+    public ResponseEntity<String> cancelOrderShipping( @PathVariable(value = "id") int id){
         if(OrderService.cancel(id, true))
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.ok("Shipping Cancelled Successfully!");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Can't Cancel Shipping!");
     }
 
 

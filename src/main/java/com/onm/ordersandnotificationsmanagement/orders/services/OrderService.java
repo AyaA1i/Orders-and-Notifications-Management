@@ -28,7 +28,7 @@ public interface OrderService {
     /**
      * The constant ALLOWED_DURATION.
      */
-    Integer ALLOWED_DURATION = 60;
+    Integer ALLOWED_DURATION = 120;
 
     /**
      * Calc order fees.
