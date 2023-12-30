@@ -30,6 +30,7 @@ public class NotificationTemplateService {
      * @param notificationTemplate the notification template
      */
     public static void addNotification(NotificationTemplate notificationTemplate, Account account) {
+        storeUsedTemp(notificationTemplate.getTemp());
         notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{x}",
                 notificationTemplate.getPlaceholders()[0]));
         notificationTemplate.setTemp(notificationTemplate.getTemp().replace("{y}",
@@ -40,7 +41,6 @@ public class NotificationTemplateService {
         }
         Notification notification = new Notification(notificationTemplate.getTemp(), LocalDateTime.now());
         NotificationTemplateRepo.Notifications.add(notification);
-        storeUsedTemp(notificationTemplate.getTemp());
         storeNotifiedAccounts(account);
     }
 
