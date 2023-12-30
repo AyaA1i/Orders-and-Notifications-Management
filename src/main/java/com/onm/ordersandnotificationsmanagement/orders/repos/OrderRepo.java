@@ -17,5 +17,5 @@ import java.util.ArrayList;
 public class OrderRepo {
     @Getter
     private static final ArrayList<Order> orders = new ArrayList<>();
-    private int noOfOrders = 0;
+    public static int ordersID = 0;
 }

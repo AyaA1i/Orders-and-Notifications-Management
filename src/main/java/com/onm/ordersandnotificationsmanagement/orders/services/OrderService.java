@@ -1,14 +1,19 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
 
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
+import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
+import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
 import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
 import org.springframework.stereotype.Service;
-
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -146,4 +151,17 @@ public interface OrderService {
         }
         return null;
     }
+    public default void checkDuration(Iterator<Map.Entry<Account, Order>> iterator){
+        while (iterator.hasNext()) {
+            Map.Entry<Account, Order> entity = iterator.next();
+            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
+
+            if (duration.toSeconds() >= ALLOWED_DURATION && !entity.getValue().isCancelled()) {
+                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(), entity.getValue());
+                NotificationTemplateService.addNotification(NT, entity.getKey());
+                iterator.remove(); // Use iterator's remove method
+            }
+        }
+    }
+
 }

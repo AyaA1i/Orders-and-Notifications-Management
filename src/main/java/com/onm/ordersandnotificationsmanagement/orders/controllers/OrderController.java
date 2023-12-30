@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 
 /**
@@ -46,7 +45,7 @@ public class OrderController {
     @PostMapping(value = "/placeSimpleOrder")
     public ResponseEntity<String> placeSimpleOrder(@RequestBody OrderAccount orderAccount){
 
-        if(simpleOrderService.placeOrder(orderAccount))
+        if(simpleOrderService.placeOrder(orderAccount) != null)
             return ResponseEntity.ok("Order Placed Successfully :)");
         return ResponseEntity.badRequest().body("Unable to place order!");
     }

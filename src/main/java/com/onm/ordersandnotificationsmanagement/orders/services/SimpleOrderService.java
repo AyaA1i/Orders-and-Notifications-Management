@@ -3,7 +3,6 @@ import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
@@ -15,10 +14,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -55,18 +53,18 @@ public class SimpleOrderService implements OrderService {
      * @param orderAccount the order account
      * @return the boolean
      */
-    public boolean placeOrder(OrderAccount orderAccount) {
+    public SimpleOrder placeOrder(OrderAccount orderAccount) {
         if (orderAccount.getProdSerialNum() == null)
-            return false;
+            return null;
 
         // return all account information
         Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
-        if (account == null) return false;
+        if (account == null) return null;
 
         SimpleOrder simpleOrder = new SimpleOrder();
-        simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
+        simpleOrder.setOrderId(++OrderRepo.ordersID);
         simpleOrder.setEmail(account.getEmail());
-
+        simpleOrder.setDate(LocalDateTime.now());
 
         // return all products' information
         for (Map.Entry<String, Integer> i : orderAccount.getProdSerialNum()) {
@@ -77,25 +75,20 @@ public class SimpleOrderService implements OrderService {
             if (curAvailProdNum >= i.getValue())
                 p.setAvailablePiecesNumber(curAvailProdNum - i.getValue());
             else
-                return false;
+                return null;
         }
-        // add order to the account orders
-        AccountService.addNewOrder(simpleOrder, account);
-        simpleOrder.setDate(java.time.LocalDateTime.now());
 
-        if (!deductOrder(simpleOrder, account)) return false;
-        if(!shipOrder(simpleOrder, account)) return false;
-
-        OrderService.add(simpleOrder);
+        if (!deductOrder(simpleOrder, account)) return null;
+        if(!shipOrder(simpleOrder, account)) return null;
 
         // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
         NotificationTemplateService.addNotification(NT,account);
 
-        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
-
-        return true;
+        AccountService.addNewOrder(simpleOrder, account);
+        OrderService.add(simpleOrder);
+        return simpleOrder;
     }
 
     @Override
@@ -110,19 +103,12 @@ public class SimpleOrderService implements OrderService {
         ordersMade.add(Map.entry(account,order));
         return true;
     }
+
     @Scheduled(cron = "0/10 * * ? * *")
-    private void callShipNotification(){
-        if(ordersMade.isEmpty())return;
-        for(Map.Entry<Account,Order>entity : ordersMade){
-            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
-            if (duration.toSeconds() >= ALLOWED_DURATION) {
-                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
-                        entity.getValue());
-                NotificationTemplateService.addNotification(NT,entity.getKey());
-                ordersMade.remove(entity);
-                if(ordersMade.isEmpty())return;
-            }
-        }
+    private void callShipNotification() {
+        if (ordersMade.isEmpty()) return;
+        Iterator<Map.Entry<Account, Order>> iterator = ordersMade.iterator();
+        checkDuration(iterator);
     }
     @Override
     public boolean deductOrder(Order order, Account account) {
@@ -147,7 +133,7 @@ public class SimpleOrderService implements OrderService {
         }
         account.getOrders().remove(order);
         OrderRepo.getOrders().remove(order);
-        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
+        order.setCancelled(true);
     }
 
     @Override
@@ -155,6 +141,7 @@ public class SimpleOrderService implements OrderService {
         Account account = AccountService.getAccountByEmail(order.getEmail());
         account.setBalance(account.getBalance() + order.getShippingFees());
         order.setShippingFees(0);
+        order.setCancelled(true);
     }
 
     /**

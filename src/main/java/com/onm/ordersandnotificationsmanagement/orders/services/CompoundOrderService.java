@@ -1,10 +1,9 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
-import ch.qos.logback.core.joran.sanity.Pair;
+
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
 import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
@@ -19,13 +18,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.security.KeyPair;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.*;
 
 /**
  * The type Compound order service.
@@ -64,55 +58,27 @@ public class CompoundOrderService implements OrderService {
      * @return the boolean
      */
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
+        Account account = AccountService.getAccountByEmail(email);
+        if(account == null) return false;
+
         CompoundOrder compoundOrder = new CompoundOrder();
-        compoundOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
+        compoundOrder.setOrderId(++OrderRepo.ordersID);
         compoundOrder.setEmail(email);
 
         for(OrderAccount orderAccount: orderAccounts)
         {
-            if (orderAccount.getProdSerialNum() == null)
-                return false;
 
-            // return all account information
-            Account account = AccountService.getAccountByEmail(orderAccount.getAccEmail());
-            if (account == null) return false;
-
-            SimpleOrder simpleOrder = new SimpleOrder();
-            simpleOrder.setOrderId(orderRepo.getNoOfOrders() + 1);
-            simpleOrder.setEmail(account.getEmail());
-            simpleOrder.setDate(LocalDateTime.now());
-
-            // return all products' information
-            for (Map.Entry<String, Integer> i : orderAccount.getProdSerialNum()) {
-                Product p = productService.searchById(i.getKey());
-                Map.Entry<Product, Integer> pair = Map.entry(p, i.getValue());
-                addProduct(simpleOrder, pair);
-                int curAvailProdNum = p.getAvailablePiecesNumber();
-                if (curAvailProdNum >= i.getValue())
-                    p.setAvailablePiecesNumber(curAvailProdNum - i.getValue());
-                else
-                    return false;
-            }
-            if(!deductOrder(simpleOrder, account)) return false;
-            if(!shipOrder(simpleOrder, account)) return false;       // deduct order fees
+            SimpleOrderService simpleOrderService = new SimpleOrderService();
+            SimpleOrder simpleOrder = simpleOrderService.placeOrder(orderAccount);
 
             compoundOrder.getSimpleOrders().add(simpleOrder);
-
             compoundOrder.setOrderFees(compoundOrder.getOrderFees() + simpleOrder.getOrderFees());
             compoundOrder.setShippingFees(compoundOrder.getShippingFees() + simpleOrder.getShippingFees());
-            // create notification
-            NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
-                    simpleOrder);
-            NotificationTemplateService.addNotification(NT,account);
-            // add order to account orders
-            AccountService.addNewOrder(simpleOrder, account);
-
-            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
         }
-
+        NotificationTemplate NT = new
+                OrderPlacementNotificationTemplate(account, compoundOrder);
+        NotificationTemplateService.addNotification(NT,account);
         OrderService.add(compoundOrder);
-        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() + 1);
-
         return true;
     }
 
@@ -136,14 +102,14 @@ public class CompoundOrderService implements OrderService {
             account.setBalance(account.getBalance() + simpleOrder.getOrderFees() + simpleOrder.getShippingFees());
             account.getOrders().remove(simpleOrder);
             OrderRepo.getOrders().remove(simpleOrder);
-            orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
+          //  orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
             for (Map.Entry<Product, Integer> product : simpleOrder.getProducts()) {
                 Product p = productService.searchById(product.getKey().getSerialNumber());
                 p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
             }
         }
         OrderRepo.getOrders().remove(order);
-        orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
+        order.setCancelled(true);
     }
 
     @Override
@@ -154,6 +120,7 @@ public class CompoundOrderService implements OrderService {
             account.setBalance(account.getBalance() + simpleOrder.getShippingFees());
             simpleOrder.setShippingFees(0);
         }
+        order.setCancelled(true);
         order.setShippingFees(0);
     }
 
@@ -170,27 +137,10 @@ public class CompoundOrderService implements OrderService {
         return true;
     }
     @Scheduled(cron = "0/10 * * ? * *")
-    private void callShipNotification(){
-        if(ordersMade.isEmpty())return;
-        for(Map.Entry<Account,Order>entity : ordersMade.entrySet()){
-            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
-            if (duration.toSeconds() >= ALLOWED_DURATION) {
-                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(),
-                        entity.getValue());
-                NotificationTemplateService.addNotification(NT,entity.getKey());
-                ordersMade.remove(entity);
-                if(ordersMade.isEmpty())return;
-            }
-        }
+    private void callShipNotification() {
+        if (ordersMade.isEmpty()) return;
+        Iterator<Map.Entry<Account, Order>> iterator = ordersMade.entrySet().iterator();
+        checkDuration(iterator);
     }
 
-    /**
-     * Add product.
-     *
-     * @param order   the order
-     * @param product the product
-     */
-    public void addProduct(SimpleOrder order, Map.Entry<Product, Integer> product){
-        order.getProducts().add(product);
-    }
 }
