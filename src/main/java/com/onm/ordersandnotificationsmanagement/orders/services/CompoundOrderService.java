@@ -39,7 +39,7 @@ public class CompoundOrderService implements OrderService {
     /**
      * The Orders made.
      */
-   Map<Account,Order>ordersMade = new HashMap<>();
+    Map<Account,Order>ordersMade = new HashMap<>();
 
     @Override
     public void calcOrderFees(Order order) {

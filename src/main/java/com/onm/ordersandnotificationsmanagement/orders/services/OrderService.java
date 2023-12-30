@@ -118,9 +118,22 @@ public interface OrderService {
     static ArrayList<Order> listOrders() {
         return OrderRepo.getOrders();
     }
+
+    /**
+     * Add.
+     *
+     * @param order the order
+     */
     public static void add(Order order){
         OrderRepo.getOrders().add(order);
     }
+
+    /**
+     * Search by id order.
+     *
+     * @param id the id
+     * @return the order
+     */
     public static Order searchById(int id){
         for(Order order: OrderRepo.getOrders()){
             if(order.getOrderId() == id)

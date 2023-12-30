@@ -28,6 +28,7 @@ public class NotificationTemplateService {
      * Add notification.
      *
      * @param notificationTemplate the notification template
+     * @param account              the account
      */
     public static void addNotification(NotificationTemplate notificationTemplate, Account account) {
         storeUsedTemp(notificationTemplate.getTemp());

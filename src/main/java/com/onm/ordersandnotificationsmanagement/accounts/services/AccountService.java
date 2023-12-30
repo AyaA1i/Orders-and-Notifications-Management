@@ -43,7 +43,8 @@ public class AccountService {
     /**
      * Add new order.
      *
-     * @param order the order
+     * @param order   the order
+     * @param account the account
      */
     public static void addNewOrder(Order order, Account account){
         account.getOrders().add(order);

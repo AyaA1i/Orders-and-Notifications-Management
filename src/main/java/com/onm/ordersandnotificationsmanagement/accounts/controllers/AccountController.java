@@ -25,7 +25,6 @@ public class AccountController {
      * Sign up string.
      *
      * @param account the account
-     *
      * @return the string
      */
     @PostMapping ("/createAccount")
@@ -35,6 +34,13 @@ public class AccountController {
         }
         return ResponseEntity.badRequest().body("This Account is Already Exist!\n");
     }
+
+    /**
+     * Handle validation exceptions map.
+     *
+     * @param ex the ex
+     * @return the map
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

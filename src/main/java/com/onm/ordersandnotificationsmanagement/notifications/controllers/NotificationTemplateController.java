@@ -17,7 +17,7 @@ public class NotificationTemplateController {
      *
      * @return the queue
      */
-    //Note :
+//Note :
     // the notifications are removed from the queue after 3 mins {bonus part}
     @RequestMapping(value = "/notifications",method = RequestMethod.GET)
     public Queue<Notification> getNotifications(){
