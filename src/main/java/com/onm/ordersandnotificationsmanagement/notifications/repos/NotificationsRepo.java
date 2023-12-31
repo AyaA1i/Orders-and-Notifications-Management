@@ -8,9 +8,9 @@ import java.util.*;
  * The type Notification template repo.
  */
 @Service
-public class NotificationTemplateRepo {
+public class NotificationsRepo {
     /**
-     * The constant Notifications.
+     * The constant Notifications Queue.
      */
     public static final Queue<Notification> Notifications = new ArrayDeque<>();
 

@@ -3,8 +3,7 @@ package com.onm.ordersandnotificationsmanagement.notifications.services;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.notifications.models.Notification;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.repos.NotificationTemplateRepo;
-import lombok.NoArgsConstructor;
+import com.onm.ordersandnotificationsmanagement.notifications.repos.NotificationsRepo;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ import java.util.Queue;
  * The type Notification template service.
  */
 @Component
-public class NotificationTemplateService {
+public class NotificationsService {
     /**
      * The constant ALLOWED_DURATION.
      */
@@ -30,7 +29,7 @@ public class NotificationTemplateService {
     /**
      * Instantiates a new Notification template service.
      */
-    NotificationTemplateService() {
+    NotificationsService() {
         availableChannels = new HashMap<>();
         addChannel("SMS", new SMSNotifierDecorator(new Notifier()));
         addChannel("Email", new EmailNotifierDecorator(new Notifier()));
@@ -66,7 +65,7 @@ public class NotificationTemplateService {
         Notification notification = new Notification(notificationTemplate.getTemp(), LocalDateTime.now());
         Notifier notifier = availableChannels.get(account.getNotificationChannel());
         notification.setTemp(notifier.sendNotification(notification, account));
-        NotificationTemplateRepo.Notifications.add(notification);
+        NotificationsRepo.Notifications.add(notification);
     }
 
     /**
@@ -75,7 +74,7 @@ public class NotificationTemplateService {
      * @return the queue
      */
     public static Queue<Notification> listAllNotifications() {
-        return NotificationTemplateRepo.Notifications;
+        return NotificationsRepo.Notifications;
     }
 
     /**
@@ -84,10 +83,10 @@ public class NotificationTemplateService {
     @Scheduled(cron = "0/10 * * ? * *")
     private void removeNotification() {
         while (true) {
-            if (NotificationTemplateRepo.Notifications.isEmpty()) break;
-            Duration duration = Duration.between(NotificationTemplateRepo.Notifications.peek().getDate(), LocalDateTime.now());
+            if (NotificationsRepo.Notifications.isEmpty()) break;
+            Duration duration = Duration.between(NotificationsRepo.Notifications.peek().getDate(), LocalDateTime.now());
             if (duration.toSeconds() > ALLOWED_DURATION) {
-                NotificationTemplateRepo.Notifications.poll();
+                NotificationsRepo.Notifications.poll();
             } else {
                 break;
             }

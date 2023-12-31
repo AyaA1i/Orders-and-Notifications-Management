@@ -3,7 +3,7 @@ package com.onm.ordersandnotificationsmanagement.orders.services;
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
+import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationsService;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
@@ -158,7 +158,7 @@ public interface OrderService {
 
             if (duration.toSeconds() >= ALLOWED_DURATION && !entity.getValue().isCancelled()) {
                 NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(), entity.getValue());
-                NotificationTemplateService.addNotification(NT, entity.getKey());
+                NotificationsService.addNotification(NT, entity.getKey());
                 iterator.remove(); // Use iterator's remove method
             }
         }

@@ -10,8 +10,8 @@ import com.onm.ordersandnotificationsmanagement.notifications.services.EmailNoti
  */
 public class OrderPlacementNotificationTemplate extends NotificationTemplate{
     /**
-     * Instantiates a new Order placement notification template.
-     *
+     * Instantiates a new Order placement notification template
+     * with it's different languages
      * @param account the account
      * @param order   the order
      */

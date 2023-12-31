@@ -4,7 +4,7 @@ import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
+import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationsService;
 import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.CompoundOrder;
@@ -77,7 +77,7 @@ public class CompoundOrderService implements OrderService {
         }
         NotificationTemplate NT = new
                 OrderPlacementNotificationTemplate(account, compoundOrder);
-        NotificationTemplateService.addNotification(NT,account);
+        NotificationsService.addNotification(NT,account);
         OrderService.add(compoundOrder);
         return true;
     }

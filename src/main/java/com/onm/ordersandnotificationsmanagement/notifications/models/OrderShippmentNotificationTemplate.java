@@ -10,8 +10,8 @@ import com.onm.ordersandnotificationsmanagement.notifications.services.SMSNotifi
  */
 public class OrderShippmentNotificationTemplate extends NotificationTemplate{
     /**
-     * Instantiates a new Order shipment notification template.
-     *
+     * Instantiates a new Order shipment notification template
+     * with it's different languages
      * @param account the account
      * @param order   the order
      */

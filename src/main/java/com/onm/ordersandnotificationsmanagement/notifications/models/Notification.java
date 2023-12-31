@@ -20,7 +20,7 @@ public class Notification {
      */
     public String temp;
     /**
-     * The Date.
+     * The Date that the notification entered the queue.
      */
     public LocalDateTime date;
 }

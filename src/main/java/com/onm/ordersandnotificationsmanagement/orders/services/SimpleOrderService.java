@@ -3,7 +3,7 @@ import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.accounts.services.AccountService;
 import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
 import com.onm.ordersandnotificationsmanagement.notifications.models.OrderPlacementNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationTemplateService;
+import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationsService;
 import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
@@ -84,7 +84,7 @@ public class SimpleOrderService implements OrderService {
         // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
-        NotificationTemplateService.addNotification(NT,account);
+        NotificationsService.addNotification(NT,account);
 
         AccountService.addNewOrder(simpleOrder, account);
         OrderService.add(simpleOrder);
