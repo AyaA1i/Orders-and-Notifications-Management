@@ -82,30 +82,29 @@ public interface OrderService {
         // order not found
         if (order == null)
             return false;
-        // check if the order date
+        // check if duration that has passed since the order was placed exceeds the allowed duration
         Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
-        if(duration.toSeconds() > ALLOWED_DURATION){
+        if(duration.toSeconds() > ALLOWED_DURATION) {
             return false;
         }
         if(order instanceof SimpleOrder)
         {
             SimpleOrderService simpleOrderService = new SimpleOrderService();
-            if(ship)
-            {
+            if(ship) // cancel shipment if the user chose to cancel shipment of the order
                simpleOrderService.cancelOrderShipment(order);
-            }
-            else
+            else // cancel order if the user chose to cancel the order
                 simpleOrderService.cancelOrder(order);
             return true;
         }
-        CompoundOrderService compoundOrderService = new CompoundOrderService();
-        if(ship)
-        {
-            compoundOrderService.cancelOrderShipment(order);
-        }
         else
-            compoundOrderService.cancelOrder(order);
-        return true;
+        {
+            CompoundOrderService compoundOrderService = new CompoundOrderService();
+            if(ship) // cancel shipment if the user chose to cancel shipment of the order
+                compoundOrderService.cancelOrderShipment(order);
+            else // cancel order if the user chose to cancel the order
+                compoundOrderService.cancelOrder(order);
+            return true;
+        }
     }
 
     /**

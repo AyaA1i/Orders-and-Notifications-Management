@@ -35,6 +35,11 @@ public class SimpleOrderService implements OrderService {
      * The Orders made.
      */
     static ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
+
+    /**
+     * It calculates the simple order's fees without shipping
+     * @param order the order
+     */
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -45,6 +50,10 @@ public class SimpleOrderService implements OrderService {
         order.setOrderFees(fees);
     }
 
+    /**
+     * It calculates shipping fees
+     * @param order the order
+     */
     @Override
     public void calcShippingFees(Order order) {
         order.setShippingFees(50.0); //default simple order shipping fees
@@ -54,6 +63,7 @@ public class SimpleOrderService implements OrderService {
      * Place order boolean.
      *
      * @param orderAccount the order account
+     * @param flag         the flag
      * @return the boolean
      */
     public SimpleOrder placeOrder(OrderAccount orderAccount, boolean flag) {
@@ -86,7 +96,9 @@ public class SimpleOrderService implements OrderService {
             OrderService.add(simpleOrder);
         }
         else
+        {
             ordersMade.add(Map.entry(account,simpleOrder));
+        }
         // create notification
         NotificationTemplate NT = new OrderPlacementNotificationTemplate(account,
                 simpleOrder);
@@ -96,6 +108,13 @@ public class SimpleOrderService implements OrderService {
 
         return simpleOrder;
     }
+
+    /**
+     * It deducts the shipping fees from the account's balance
+     * @param order   the order
+     * @param account the account
+     * @return boolean
+     */
     @Override
     public boolean shipOrder(Order order, Account account) {
         calcShippingFees(order);
@@ -109,12 +128,19 @@ public class SimpleOrderService implements OrderService {
         return true;
     }
 
+    // We assume that the account who ordered the compound order won't receive shipment notification
+    // but all accounts involved in this compound order will receive.
     @Scheduled(cron = "0/10 * * ? * *")
     private void callShipNotification() {
         if (ordersMade.isEmpty()) return;
         Iterator<Map.Entry<Account, Order>> iterator = ordersMade.iterator();
         checkDuration(iterator);
     }
+
+    /**
+     * It checks if the allowed duration of shipment notification has passed, and adds notification if it was valid
+     * @param iterator
+     */
     private void checkDuration(Iterator<Map.Entry<Account, Order>> iterator){
         while (iterator.hasNext()) {
             Map.Entry<Account, Order> entity = iterator.next();
@@ -127,6 +153,13 @@ public class SimpleOrderService implements OrderService {
             }
         }
     }
+
+    /**
+     * It deducts the order fees from the user if he/she has enough balance
+     * @param order   the order
+     * @param account the account
+     * @return
+     */
     @Override
     public boolean deductOrder(Order order, Account account) {
         calcOrderFees(order);
@@ -138,7 +171,12 @@ public class SimpleOrderService implements OrderService {
         }
         return true;
     }
-   @Override
+
+    /**
+     * It cancels the order if it exists
+     * @param order the order
+     */
+    @Override
     public void cancelOrder(Order order)
     {
         Account account = AccountService.getAccountByEmail(order.getEmail());
@@ -153,6 +191,10 @@ public class SimpleOrderService implements OrderService {
         order.setCancelled(true);
     }
 
+    /**
+     * It cancels the shipment of the order
+     * @param order the order
+     */
     @Override
     public void cancelOrderShipment(Order order) {
         Account account = AccountService.getAccountByEmail(order.getEmail());
