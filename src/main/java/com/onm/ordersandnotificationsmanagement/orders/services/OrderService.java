@@ -1,30 +1,18 @@
 package com.onm.ordersandnotificationsmanagement.orders.services;
-
 import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
-import com.onm.ordersandnotificationsmanagement.notifications.models.NotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.models.OrderShippmentNotificationTemplate;
-import com.onm.ordersandnotificationsmanagement.notifications.services.NotificationsService;
 import com.onm.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.onm.ordersandnotificationsmanagement.orders.models.Order;
 import com.onm.ordersandnotificationsmanagement.orders.models.SimpleOrder;
 import com.onm.ordersandnotificationsmanagement.products.services.ProductService;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 
 /**
  * The interface Order service.
  */
 @Service
 public interface OrderService {
-    /**
-     * The constant orderRepo.
-     */
-    OrderRepo orderRepo = new OrderRepo();
     /**
      * The constant productService.
      */
@@ -94,7 +82,7 @@ public interface OrderService {
         // order not found
         if (order == null)
             return false;
-
+        // check if the order date
         Duration duration = Duration.between(order.getDate(),java.time.LocalDateTime.now());
         if(duration.toSeconds() > ALLOWED_DURATION){
             return false;
@@ -134,7 +122,7 @@ public interface OrderService {
      *
      * @param order the order
      */
-     static void add(Order order){
+    static void add(Order order){
         OrderRepo.getOrders().add(order);
     }
 
@@ -144,7 +132,7 @@ public interface OrderService {
      * @param id the id
      * @return the order
      */
-     static Order searchById(int id){
+    static Order searchById(int id){
         for(Order order: OrderRepo.getOrders()){
             if(order.getOrderId() == id)
                 return order;

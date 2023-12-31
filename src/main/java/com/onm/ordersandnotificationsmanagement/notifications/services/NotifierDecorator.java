@@ -15,7 +15,7 @@ public abstract class NotifierDecorator extends Notifier{
      * send notification
      * @param notification the notification
      * @param account      the account
-     * @return
+     * @return String
      */
     @Override
     public String sendNotification(Notification notification, Account account) {

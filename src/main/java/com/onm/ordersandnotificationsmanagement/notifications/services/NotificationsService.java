@@ -162,7 +162,7 @@ public class NotificationsService {
 
     /**
      * store the templates used in the map
-     * @param temp
+     * @param temp String
      */
     private static void storeUsedTemp(String temp){
         //if the template wasn't used before

@@ -31,9 +31,9 @@ import java.util.*;
 @Component
 public class CompoundOrderService implements OrderService {
     /**
-     * The Orders made.
+     * used to calc the fees of the compound order
+     * @param order the order
      */
-
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -44,13 +44,17 @@ public class CompoundOrderService implements OrderService {
         order.setOrderFees(fees);
     }
 
+    /**
+     * default compound order shipping fees
+     * @param order the order
+     */
     @Override
     public void calcShippingFees(Order order) {
-        order.setShippingFees(20.0);      // default compound order shipping fees
+        order.setShippingFees(20.0);
     }
 
     /**
-     * Place order boolean.
+     * Place order
      *
      * @param orderAccounts the order accounts
      * @param email         the email
@@ -59,32 +63,44 @@ public class CompoundOrderService implements OrderService {
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
 
         CompoundOrder compoundOrder = new CompoundOrder();
+        // set the id for the order
         compoundOrder.setOrderId(++OrderRepo.ordersID);
+        // check if the email exist
         Account account = AccountService.getAccountByEmail(email);
         if (account == null) return false;
-
+        //set email of the order
         compoundOrder.setEmail(email);
-
+        // loop over all the simple orders inside the compound order
         for(OrderAccount orderAccount: orderAccounts)
         {
             Account account1 = AccountService.getAccountByEmail(orderAccount.getAccEmail());
 
             SimpleOrderService simpleOrderService = new SimpleOrderService();
+            // place the simple order
             SimpleOrder simpleOrder = simpleOrderService.placeOrder(orderAccount, false);
             if(simpleOrder == null) return false;
-
-            if(!shipOrder(simpleOrder, account1)) return false;       // deduct order fees
+            // deduct order shipping fees
+            if(!shipOrder(simpleOrder, account1)) return false;
             compoundOrder.getSimpleOrders().add(simpleOrder);
-
+            // recalculate the fees of the compound
             compoundOrder.setOrderFees(compoundOrder.getOrderFees() + simpleOrder.getOrderFees());
             compoundOrder.setShippingFees(compoundOrder.getShippingFees() + simpleOrder.getShippingFees());
         }
+        // add the order to the repo
         OrderService.add(compoundOrder);
+        // call the notification sender to notify the placement of the compound order
         NotificationTemplate NT = new
                 OrderPlacementNotificationTemplate(account, compoundOrder);
         NotificationsService.addNotification(NT,account);
         return true;
     }
+
+    /**
+     * used to deduct the order fees from the customer
+     * @param order   the order
+     * @param account the account
+     * @return boolean
+     */
     @Override
     public boolean deductOrder(Order order, Account account) {
         calcOrderFees(order);
@@ -96,41 +112,73 @@ public class CompoundOrderService implements OrderService {
         }
         return true;
     }
+
+    /**
+     * used to cancel the order
+     * @param order the order
+     */
     @Override
     public  void cancelOrder(Order order)
     {
+        // loop over all the simple orders inside the compound order
         for(SimpleOrder simpleOrder: ((CompoundOrder)order).getSimpleOrders())
         {
+            // get the account that placed the order
             Account account = AccountService.getAccountByEmail(simpleOrder.getEmail());
+            // return the fees for him
             account.setBalance(account.getBalance() + simpleOrder.getOrderFees() + simpleOrder.getShippingFees());
+            // remove that order from the user account
             account.getOrders().remove(simpleOrder);
+            // remove the order from the repo
             OrderRepo.getOrders().remove(simpleOrder);
+            // loop over the products inside the order to reset it's availability
             for (Map.Entry<Product, Integer> product : simpleOrder.getProducts()) {
                 Product p = productService.searchById(product.getKey().getSerialNumber());
                 p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
             }
+            // set the simple order inside the compound order to cancel
             simpleOrder.setCancelled(true);
         }
+        // remove the compound order from the repo
         OrderRepo.getOrders().remove(order);
+        // set the compound order to cancel
         order.setCancelled(true);
     }
 
+    /**
+     * cancel the order shipment
+     * @param order the order
+     */
     @Override
     public void cancelOrderShipment(Order order) {
+        // loop over the simple orders inside the compound order
         for(SimpleOrder simpleOrder: ((CompoundOrder)order).getSimpleOrders())
         {
+            // return the user the fees of the order
             Account account = AccountService.getAccountByEmail(simpleOrder.getEmail());
             account.setBalance(account.getBalance() + simpleOrder.getShippingFees());
+            // set the simple order inside the compound to cancel
             simpleOrder.setCancelled(true);
+            // set the order shipment fees to 0
             simpleOrder.setShippingFees(0);
         }
+        // set the compound order to cancel
         order.setCancelled(true);
+        // set the shipping for thr compound order
         order.setShippingFees(0);
     }
 
+    /**
+     * ship the order
+     * @param order   the order
+     * @param account the account
+     * @return boolean
+     */
     @Override
     public boolean shipOrder(Order order, Account account) {
+        // calc the order fees
         calcShippingFees(order);
+        // calc the uer balance
         double newBalance = account.getBalance() - order.getShippingFees();
         if (newBalance >= 0) {
             account.setBalance(newBalance);

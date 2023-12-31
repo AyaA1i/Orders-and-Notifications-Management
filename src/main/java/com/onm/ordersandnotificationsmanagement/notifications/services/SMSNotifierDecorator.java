@@ -21,7 +21,7 @@ public class SMSNotifierDecorator extends NotifierDecorator {
      * send notification via sms
      * @param notification the notification
      * @param account      the account
-     * @return
+     * @return String
      */
     @Override
     public String sendNotification(Notification notification, Account account) {
@@ -32,7 +32,7 @@ public class SMSNotifierDecorator extends NotifierDecorator {
 
     /**
      * store the notified phone number
-     * @param account
+     * @param account Account
      */
     private void storeNotifiedPhoneNumber(Account account) {
         // check if the phone number was notified before
