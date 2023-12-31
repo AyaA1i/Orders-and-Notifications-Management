@@ -33,7 +33,7 @@ public class CompoundOrderService implements OrderService {
     /**
      * The Orders made.
      */
-    Map<Account,Order>ordersMade = new HashMap<>();
+    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
 
     @Override
     public void calcOrderFees(Order order) {
@@ -102,7 +102,6 @@ public class CompoundOrderService implements OrderService {
             account.setBalance(account.getBalance() + simpleOrder.getOrderFees() + simpleOrder.getShippingFees());
             account.getOrders().remove(simpleOrder);
             OrderRepo.getOrders().remove(simpleOrder);
-          //  orderRepo.setNoOfOrders(orderRepo.getNoOfOrders() - 1);
             for (Map.Entry<Product, Integer> product : simpleOrder.getProducts()) {
                 Product p = productService.searchById(product.getKey().getSerialNumber());
                 p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
@@ -133,13 +132,13 @@ public class CompoundOrderService implements OrderService {
         } else {
             return false;
         }
-        ordersMade.put(account,order);
+        ordersMade.add(Map.entry(account,order));
         return true;
     }
     @Scheduled(cron = "0/10 * * ? * *")
     private void callShipNotification() {
         if (ordersMade.isEmpty()) return;
-        Iterator<Map.Entry<Account, Order>> iterator = ordersMade.entrySet().iterator();
+        Iterator<Map.Entry<Account, Order>> iterator = ordersMade.iterator();
         checkDuration(iterator);
     }
 

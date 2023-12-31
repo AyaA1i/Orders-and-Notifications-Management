@@ -31,7 +31,7 @@ public class SimpleOrderService implements OrderService {
     /**
      * The Orders made.
      */
-    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
+    static ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
     @Override
     public void calcOrderFees(Order order) {
         double fees = 0;
@@ -109,6 +109,9 @@ public class SimpleOrderService implements OrderService {
         if (ordersMade.isEmpty()) return;
         Iterator<Map.Entry<Account, Order>> iterator = ordersMade.iterator();
         checkDuration(iterator);
+    }
+    public static ArrayList<Map.Entry<Account,Order>> test(){
+        return ordersMade;
     }
     @Override
     public boolean deductOrder(Order order, Account account) {

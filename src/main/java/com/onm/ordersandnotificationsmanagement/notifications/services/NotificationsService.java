@@ -121,12 +121,13 @@ public class NotificationsService {
         }
         // if more than one email / phone number has the max number of notifications
         // all of them will be returned
-        StringBuilder tmp = new StringBuilder(mostused);
+        StringBuilder tmp = new StringBuilder();
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostNotified.entrySet()){
             if (Objects.equals(NotificationTemplate.mostNotified.get(mostused), Entry.getValue())) {
-                tmp.append(", ").append(Entry.getKey());
+                tmp.append(Entry.getKey()).append(", ");
             }
         }
+        tmp.replace(tmp.length()-1 , tmp.length()-1,"");
 
         return tmp.toString();
     }

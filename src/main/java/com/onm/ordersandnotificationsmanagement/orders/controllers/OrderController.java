@@ -1,5 +1,6 @@
 package com.onm.ordersandnotificationsmanagement.orders.controllers;
 
+import com.onm.ordersandnotificationsmanagement.accounts.models.Account;
 import com.onm.ordersandnotificationsmanagement.orders.models.OrderAccount;
 import com.onm.ordersandnotificationsmanagement.orders.services.CompoundOrderService;
 import com.onm.ordersandnotificationsmanagement.orders.services.OrderService;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * The type Order controller.
@@ -100,6 +102,11 @@ public class OrderController {
             return ResponseEntity.ok("Shipping Cancelled Successfully!");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Can't Cancel Shipping!");
     }
+    @GetMapping(value = "/test")
+    public ArrayList<Map .Entry<Account,Order>> test(){
+        return SimpleOrderService.test();
+    }
+
 
 
 }
