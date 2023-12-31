@@ -47,7 +47,7 @@ public class OrderController {
     @PostMapping(value = "/placeSimpleOrder")
     public ResponseEntity<String> placeSimpleOrder(@RequestBody OrderAccount orderAccount){
 
-        if(simpleOrderService.placeOrder(orderAccount) != null)
+        if(simpleOrderService.placeOrder(orderAccount,true) != null)
             return ResponseEntity.ok("Order Placed Successfully :)");
         return ResponseEntity.badRequest().body("Unable to place order!");
     }
@@ -101,10 +101,6 @@ public class OrderController {
         if(OrderService.cancel(id, true))
             return ResponseEntity.ok("Shipping Cancelled Successfully!");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Can't Cancel Shipping!");
-    }
-    @GetMapping(value = "/test")
-    public ArrayList<Map .Entry<Account,Order>> test(){
-        return SimpleOrderService.test();
     }
 
 

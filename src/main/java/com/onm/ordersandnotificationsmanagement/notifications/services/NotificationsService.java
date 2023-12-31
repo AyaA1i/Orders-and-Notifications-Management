@@ -127,7 +127,7 @@ public class NotificationsService {
                 tmp.append(Entry.getKey()).append(", ");
             }
         }
-        tmp.replace(tmp.length()-1 , tmp.length()-1,"");
+        tmp.replace(tmp.length()-2 , tmp.length()-1," ");
 
         return tmp.toString();
     }
@@ -150,13 +150,13 @@ public class NotificationsService {
         }
         // if more than one template has the max number of usage
         // all of them will be returned
-        StringBuilder tmp = new StringBuilder(mostused);
+        StringBuilder tmp = new StringBuilder();
         for(Map.Entry<String, Integer> Entry : NotificationTemplate.mostUsedTemp.entrySet()){
             if (Objects.equals(NotificationTemplate.mostUsedTemp.get(mostused), Entry.getValue())) {
-                tmp.append(", ").append(Entry.getKey());
+                tmp.append(Entry.getKey()).append(", ");
             }
         }
-
+        tmp.replace(tmp.length()-2 , tmp.length()-1," ");
         return tmp.toString();
     }
 

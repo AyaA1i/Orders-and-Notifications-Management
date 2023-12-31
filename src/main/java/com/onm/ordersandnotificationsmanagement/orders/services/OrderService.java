@@ -134,7 +134,7 @@ public interface OrderService {
      *
      * @param order the order
      */
-    public static void add(Order order){
+     static void add(Order order){
         OrderRepo.getOrders().add(order);
     }
 
@@ -144,24 +144,12 @@ public interface OrderService {
      * @param id the id
      * @return the order
      */
-    public static Order searchById(int id){
+     static Order searchById(int id){
         for(Order order: OrderRepo.getOrders()){
             if(order.getOrderId() == id)
                 return order;
         }
         return null;
-    }
-    public default void checkDuration(Iterator<Map.Entry<Account, Order>> iterator){
-        while (iterator.hasNext()) {
-            Map.Entry<Account, Order> entity = iterator.next();
-            Duration duration = Duration.between(entity.getValue().getDate(), LocalDateTime.now());
-
-            if (duration.toSeconds() >= ALLOWED_DURATION && !entity.getValue().isCancelled()) {
-                NotificationTemplate NT = new OrderShippmentNotificationTemplate(entity.getKey(), entity.getValue());
-                NotificationsService.addNotification(NT, entity.getKey());
-                iterator.remove(); // Use iterator's remove method
-            }
-        }
     }
 
 }

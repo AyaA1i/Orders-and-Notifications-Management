@@ -33,7 +33,6 @@ public class CompoundOrderService implements OrderService {
     /**
      * The Orders made.
      */
-    ArrayList<Map.Entry<Account,Order>>ordersMade = new ArrayList<>();
 
     @Override
     public void calcOrderFees(Order order) {
@@ -58,30 +57,34 @@ public class CompoundOrderService implements OrderService {
      * @return the boolean
      */
     public boolean placeOrder(ArrayList<OrderAccount> orderAccounts,String email) {
-        Account account = AccountService.getAccountByEmail(email);
-        if(account == null) return false;
 
         CompoundOrder compoundOrder = new CompoundOrder();
         compoundOrder.setOrderId(++OrderRepo.ordersID);
+        Account account = AccountService.getAccountByEmail(email);
+        if (account == null) return false;
+
         compoundOrder.setEmail(email);
 
         for(OrderAccount orderAccount: orderAccounts)
         {
+            Account account1 = AccountService.getAccountByEmail(orderAccount.getAccEmail());
 
             SimpleOrderService simpleOrderService = new SimpleOrderService();
-            SimpleOrder simpleOrder = simpleOrderService.placeOrder(orderAccount);
+            SimpleOrder simpleOrder = simpleOrderService.placeOrder(orderAccount, false);
+            if(simpleOrder == null) return false;
 
+            if(!shipOrder(simpleOrder, account1)) return false;       // deduct order fees
             compoundOrder.getSimpleOrders().add(simpleOrder);
+
             compoundOrder.setOrderFees(compoundOrder.getOrderFees() + simpleOrder.getOrderFees());
             compoundOrder.setShippingFees(compoundOrder.getShippingFees() + simpleOrder.getShippingFees());
         }
+        OrderService.add(compoundOrder);
         NotificationTemplate NT = new
                 OrderPlacementNotificationTemplate(account, compoundOrder);
         NotificationsService.addNotification(NT,account);
-        OrderService.add(compoundOrder);
         return true;
     }
-
     @Override
     public boolean deductOrder(Order order, Account account) {
         calcOrderFees(order);
@@ -106,6 +109,7 @@ public class CompoundOrderService implements OrderService {
                 Product p = productService.searchById(product.getKey().getSerialNumber());
                 p.setAvailablePiecesNumber(p.getAvailablePiecesNumber() + product.getValue());
             }
+            simpleOrder.setCancelled(true);
         }
         OrderRepo.getOrders().remove(order);
         order.setCancelled(true);
@@ -117,6 +121,7 @@ public class CompoundOrderService implements OrderService {
         {
             Account account = AccountService.getAccountByEmail(simpleOrder.getEmail());
             account.setBalance(account.getBalance() + simpleOrder.getShippingFees());
+            simpleOrder.setCancelled(true);
             simpleOrder.setShippingFees(0);
         }
         order.setCancelled(true);
@@ -132,14 +137,7 @@ public class CompoundOrderService implements OrderService {
         } else {
             return false;
         }
-        ordersMade.add(Map.entry(account,order));
         return true;
-    }
-    @Scheduled(cron = "0/10 * * ? * *")
-    private void callShipNotification() {
-        if (ordersMade.isEmpty()) return;
-        Iterator<Map.Entry<Account, Order>> iterator = ordersMade.iterator();
-        checkDuration(iterator);
     }
 
 }
