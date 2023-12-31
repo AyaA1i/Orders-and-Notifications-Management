@@ -10,6 +10,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public abstract class NotifierDecorator extends Notifier{
     private Notifier notifier;
+
+    /**
+     * send notification
+     * @param notification the notification
+     * @param account      the account
+     * @return
+     */
     @Override
     public String sendNotification(Notification notification, Account account) {
        return notifier.sendNotification(notification, account);

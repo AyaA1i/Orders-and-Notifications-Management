@@ -8,7 +8,7 @@ import com.onm.ordersandnotificationsmanagement.notifications.models.Notificatio
  */
 public class Notifier {
     /**
-     * Print string.
+     * Print notification.
      *
      * @param notification the notification
      * @param account      the account

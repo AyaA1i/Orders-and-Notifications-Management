@@ -16,11 +16,23 @@ public class SMSNotifierDecorator extends NotifierDecorator {
     public SMSNotifierDecorator(Notifier notifier) {
         super(notifier);
     }
+
+    /**
+     * send notification via sms
+     * @param notification the notification
+     * @param account      the account
+     * @return
+     */
     @Override
     public String sendNotification(Notification notification, Account account) {
         storeNotifiedPhoneNumber(account);
         return super.sendNotification(notification, account) + "Sent From SMS -";
     }
+
+    /**
+     * store the notified phone number
+     * @param account
+     */
     private void storeNotifiedPhoneNumber(Account account) {
         if(NotificationTemplate.mostNotified.get(account.getPhoneNumber())==null)
             NotificationTemplate.mostNotified.put(account.getPhoneNumber(),0);

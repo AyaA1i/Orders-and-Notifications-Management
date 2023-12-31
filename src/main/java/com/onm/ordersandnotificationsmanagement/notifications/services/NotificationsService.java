@@ -24,10 +24,13 @@ public class NotificationsService {
      */
     public static Integer ALLOWED_DURATION = 180;
 
+    /**
+     * this map used to store objects of the available channels to don't violate OCP
+     */
     private static Map<String, Notifier> availableChannels;
 
     /**
-     * Instantiates a new Notification template service.
+     * Instantiates a new Channel.
      */
     NotificationsService() {
         availableChannels = new HashMap<>();
@@ -47,7 +50,7 @@ public class NotificationsService {
     }
 
     /**
-     * Add notification.
+     * Add notification to the queue.
      *
      * @param notificationTemplate the notification template
      * @param account              the account
@@ -78,7 +81,7 @@ public class NotificationsService {
     }
 
     /**
-     * Remove notification.
+     * Remove notification from the queue after the configured time.
      */
     @Scheduled(cron = "0/10 * * ? * *")
     private void removeNotification() {
@@ -94,7 +97,7 @@ public class NotificationsService {
     }
 
     /**
-     * Get most notified string.
+     * Get most notified phone number or email.
      *
      * @return the string
      */
@@ -120,7 +123,7 @@ public class NotificationsService {
     }
 
     /**
-     * Get most used template string.
+     * Get most used template.
      *
      * @return the string
      */
@@ -144,6 +147,11 @@ public class NotificationsService {
 
         return tmp.toString();
     }
+
+    /**
+     * store the templates used in the map
+     * @param temp
+     */
     private static void storeUsedTemp(String temp){
         if(NotificationTemplate.mostUsedTemp.get(temp)==null)
             NotificationTemplate.mostUsedTemp.put(temp,0);
