@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-import static com.onm.ordersandnotificationsmanagement.utilities.ExceptionHandler.getErrorHandlerMap;
+import static com.onm.ordersandnotificationsmanagement.utilities.ErrorHandler.getErrorHandlerMap;
 
 /**
  * The type Account controller.

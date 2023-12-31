@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * The type Exception handler.
  */
-public class ExceptionHandler {
+public class ErrorHandler {
     /**
      * Gets error handler map.
      *

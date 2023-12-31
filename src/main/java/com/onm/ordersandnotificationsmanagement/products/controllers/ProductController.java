@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static com.onm.ordersandnotificationsmanagement.utilities.ExceptionHandler.getErrorHandlerMap;
+import static com.onm.ordersandnotificationsmanagement.utilities.ErrorHandler.getErrorHandlerMap;
 
 /**
  * The type Product controller.
@@ -69,7 +69,7 @@ public class ProductController {
      * @param category the category
      * @return the response entity
      */
-    @GetMapping("/{categoryName}")
+    @GetMapping("/{categoryName}")      //count products in certain category
     public ResponseEntity<Integer> countProducts(@Valid @PathVariable(value = "categoryName") Category category) {
         return ResponseEntity.ok(productService.countProducts(category));
     }

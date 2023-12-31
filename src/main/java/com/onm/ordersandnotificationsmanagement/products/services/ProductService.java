@@ -52,6 +52,7 @@ public class ProductService {
      */
     public ArrayList<Product> listAvailableProducts() {
         ArrayList<Product> availableProducts = new ArrayList<>();
+        //get all products available in stock
         for (Product product : ProductRepo.productList) {
             if (product.getAvailablePiecesNumber() > 0)
                 availableProducts.add(product);
