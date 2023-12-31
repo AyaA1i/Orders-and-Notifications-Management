@@ -27,6 +27,7 @@ public class EmailNotifierDecorator extends NotifierDecorator {
     @Override
     public String sendNotification(Notification notification, Account account) {
         storeNotifiedEmail(account);
+        // sent notification via Email
         return super.sendNotification(notification, account) + " Sent From Email";
     }
 
@@ -35,9 +36,12 @@ public class EmailNotifierDecorator extends NotifierDecorator {
      * @param account
      */
     private void storeNotifiedEmail(Account account) {
+        // check if the email was notified before or not
         if(NotificationTemplate.mostNotified.get(account.getEmail())==null)
+            // if not initialize with 0
             NotificationTemplate.mostNotified.put(account.getEmail(),0);
         else
+            // else increment by 1
             NotificationTemplate.mostNotified.put(account.getEmail(),
                     NotificationTemplate.mostNotified.get(account.getEmail())+1);
     }

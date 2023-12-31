@@ -26,6 +26,7 @@ public class SMSNotifierDecorator extends NotifierDecorator {
     @Override
     public String sendNotification(Notification notification, Account account) {
         storeNotifiedPhoneNumber(account);
+        // send notification via SMS
         return super.sendNotification(notification, account) + "Sent From SMS -";
     }
 
@@ -34,9 +35,12 @@ public class SMSNotifierDecorator extends NotifierDecorator {
      * @param account
      */
     private void storeNotifiedPhoneNumber(Account account) {
+        // check if the phone number was notified before
+        // if not initialize with 0
         if(NotificationTemplate.mostNotified.get(account.getPhoneNumber())==null)
             NotificationTemplate.mostNotified.put(account.getPhoneNumber(),0);
         else
+            // increment it by 1
             NotificationTemplate.mostNotified.put(account.getPhoneNumber(),
                     NotificationTemplate.mostNotified.get(account.getPhoneNumber())+1);
     }
