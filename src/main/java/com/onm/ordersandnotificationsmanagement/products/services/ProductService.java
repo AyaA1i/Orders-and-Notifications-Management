@@ -13,10 +13,10 @@ import java.util.Objects;
 @Service
 public class ProductService {
     /**
-     * Add.
+     * Add product boolean.
      *
      * @param product the product
-     * @return the array list
+     * @return the boolean
      */
     public boolean addProduct(Product product) {
         if (searchById(product.getSerialNumber()) == null) {
@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     /**
-     * Remove.
+     * Remove product boolean.
      *
      * @param serialNumber the serial number
      * @return the boolean
@@ -46,7 +46,7 @@ public class ProductService {
     }
 
     /**
-     * List all array list.
+     * List available products array list.
      *
      * @return the array list
      */

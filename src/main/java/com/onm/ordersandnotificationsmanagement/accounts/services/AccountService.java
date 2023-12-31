@@ -12,10 +12,10 @@ import java.util.Objects;
 @Service
 public class AccountService {
     /**
-     * Sign up string.
+     * Create account boolean.
      *
      * @param account the account
-     * @return the string
+     * @return the boolean
      */
     public boolean createAccount(Account account){
         if(getAccountByEmail(account.getEmail()) == null){
@@ -26,7 +26,7 @@ public class AccountService {
     }
 
     /**
-     * Get account using email.
+     * Get account by email account.
      *
      * @param email the email
      * @return the account

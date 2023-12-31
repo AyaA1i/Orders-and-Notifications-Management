@@ -22,7 +22,7 @@ public class EmailNotifierDecorator extends NotifierDecorator {
      * send the notification via email
      * @param notification the notification
      * @param account      the account
-     * @return
+     * @return String
      */
     @Override
     public String sendNotification(Notification notification, Account account) {
@@ -33,7 +33,7 @@ public class EmailNotifierDecorator extends NotifierDecorator {
 
     /**
      * store the notified email
-     * @param account
+     * @param account Account
      */
     private void storeNotifiedEmail(Account account) {
         // check if the email was notified before or not

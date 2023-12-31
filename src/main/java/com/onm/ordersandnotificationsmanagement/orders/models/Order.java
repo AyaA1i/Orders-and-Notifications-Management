@@ -31,5 +31,8 @@ public abstract class Order {
      * The Email.
      */
     protected String email;
+    /**
+     * The Cancelled.
+     */
     protected boolean cancelled = false;
 }

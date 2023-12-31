@@ -54,7 +54,7 @@ public class ProductController {
     }
 
     /**
-     * List all products response entity.
+     * List available products response entity.
      *
      * @return the response entity
      */
