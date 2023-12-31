@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static com.onm.ordersandnotificationsmanagement.utilities.ExceptionHandler.getErrorHandlerMap;
+import static com.onm.ordersandnotificationsmanagement.utilities.ErrorHandler.getErrorHandlerMap;
 
 /**
  * The type Product controller.
