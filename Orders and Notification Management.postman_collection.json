@@ -1,0 +1,163 @@
+{
+	"info": {
+		"_postman_id": "d76e7b35-d868-4de2-8f5b-e2d5afc0b9f3",
+		"name": "Orders and Notification Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28448711"
+	},
+	"item": [
+		{
+			"name": "CreateAccount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"aya\",\r\n    \"email\":\"aya@gmail.com\",\r\n    \"password\":\"Aya12345\",\r\n    \"phoneNumber\":\"01034567888\",\r\n    \"language\":\"English\",\r\n    \"notificationChannel\":\"Both\",\r\n    \"balance\":1000.5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/createAccount"
+			},
+			"response": []
+		},
+		{
+			"name": "addProduct",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"serialNumber\" : \"12\",\r\n    \"name\" : \"aya\",\r\n    \"vendor\" : \"aya\",\r\n    \"category\" : \"HOME\",\r\n    \"price\" : 10.5,\r\n    \"availablePiecesNumber\" : 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/product/add"
+			},
+			"response": []
+		},
+		{
+			"name": "listProducts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/product/list"
+			},
+			"response": []
+		},
+		{
+			"name": "removeProduct",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/product/remove/12"
+			},
+			"response": []
+		},
+		{
+			"name": "Category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/product/HOME"
+			},
+			"response": []
+		},
+		{
+			"name": "placeSimpleOrder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"accEmail\": \"aya@gmail.com\",\r\n  \"prodSerialNum\": [\r\n    {\"12\": 2}\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/order/placeSimpleOrder"
+			},
+			"response": []
+		},
+		{
+			"name": "cancelOrder",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/order/cancelOrder/1"
+			},
+			"response": []
+		},
+		{
+			"name": "placeCompoundOrder",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n  \"accEmail\": \"aya@gmail.com\",\r\n  \"prodSerialNum\": [\r\n    {\"12\": 2},\r\n    {\"12\" : 1}\r\n  ]\r\n},\r\n{\r\n  \"accEmail\": \"aya@gmail.com\",\r\n  \"prodSerialNum\": [\r\n    {\"12\" : 1}\r\n  ]\r\n}\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/order/placeCompoundOrder/aya@gmail.com"
+			},
+			"response": []
+		},
+		{
+			"name": "cancelShipment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8080/order/cancelOrderShipping/2"
+			},
+			"response": []
+		},
+		{
+			"name": "listOrders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/order/listOrders"
+			},
+			"response": []
+		},
+		{
+			"name": "getNotifications",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/notifications"
+			},
+			"response": []
+		},
+		{
+			"name": "getMostNotified",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/mostNotified"
+			},
+			"response": []
+		},
+		{
+			"name": "getMostUsedTemplate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/mostUsedTemplate"
+			},
+			"response": []
+		}
+	]
+}
