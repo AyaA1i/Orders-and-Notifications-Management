@@ -11,18 +11,17 @@ This project focuses on creating "Orders and Notifications Management" module fo
 6. Notifications Handling
 
 ## API Endpoints
-1. Sign Up
-2. Log in
-3. View Catalog
-4. Make simple order
-5. Make compound order
-6. Show Customer Notifications
-7. Cancel Order
-8. cancel order shipping
-9. view the remaining products of a category
-10. get the most notified phone number
-11. get the most used template
-12. get the notifications
+1. create account
+2. View Catalog
+3. Make simple order
+4. Make compound order
+5. Show Customer Notifications
+6. Cancel Order
+7. cancel order shipping
+8. view the remaining products of a category
+9. get the most notified phone number
+10. get the most used template
+11. get the notifications
 
 
 ## UML System Class Diagram
