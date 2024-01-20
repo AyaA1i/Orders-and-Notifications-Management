@@ -21,7 +21,6 @@ This project focuses on creating "Orders and Notifications Management" module fo
 8. View the remaining products of a category
 9. Get the most notified phone number
 10. Get the most used template
-11. Get the notifications
 
 
 ## UML System Class Diagram
