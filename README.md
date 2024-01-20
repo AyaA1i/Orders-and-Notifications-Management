@@ -18,6 +18,11 @@ This project focuses on creating "Orders and Notifications Management" module fo
 5. Make compound order
 6. Show Customer Notifications
 7. Cancel Order
+8. cancel order shipping
+9. view the remaining products of a category
+10. get the most notified phone number
+11. get the most used template
+12. get the notifications
 
 
 ## UML System Class Diagram
@@ -38,12 +43,11 @@ This project focuses on creating "Orders and Notifications Management" module fo
 | DELETE ```/order/cancelOrderShipping/{id}``` | Check if the order can be canceled if it is it changes its status to canceled it's shipping and returns the money to the customers | NONE |
 | GET ```/mostUsedTemplate``` | Returns a string with the templates' statistics, sorted by their frequencies, representing the number of times each template has been sent. | NONE |
 | GET ```/mostNotified``` | Returns a string that has the statistics for the most notified email addresses and phone numbers | NONE |
-| GET ```/notifications`` | Returns a the current notifications in the queue | NONE |
+| GET ```/notifications``` | Returns a the current notifications in the queue | NONE |
 
 
 
 ## Contributers
-Orders and Notifications API project is developed with contributions from the following team members working with Agile SDLC method:
 - [Aya Ali](https://github.com/AyaA1i)
 - [Maya Ayman](https://github.com/MayaZayn)
 - [Basmala Gad](https://github.com/BasmalahGad)
