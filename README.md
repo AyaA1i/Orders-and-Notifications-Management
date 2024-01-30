@@ -45,7 +45,7 @@ This project focuses on creating "Orders and Notifications Management" module fo
 
 
 
-## Contributers
+## Contributors
 - [Aya Ali](https://github.com/AyaA1i)
 - [Maya Ayman](https://github.com/MayaZayn)
 - [Basmala Gad](https://github.com/BasmalahGad)
